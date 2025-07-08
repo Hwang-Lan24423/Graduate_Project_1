@@ -161,7 +161,7 @@ This project is licensed under the ISC License [10](#7-9)
 
 ## 👥 Author
 
-Graduate Project - Hotel Management System
+Myself - Le Nguyen Hoang Lan
 
 ## 🆘 Support
 
