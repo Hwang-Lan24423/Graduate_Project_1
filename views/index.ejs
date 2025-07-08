@@ -1,0 +1,219 @@
+<!-- Hero Section -->
+<div class="hero-section mb-5">
+  <div class="hero-image position-relative">
+    <img src="/img/hotel-hero.jpg" alt="Luxury Hotel" class="img-fluid w-100" style="height: 70vh; object-fit: cover;">
+    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.5);">
+      <div class="text-center text-white px-4">
+        <h1 class="display-4 fw-bold">Welcome to Luxury Hotel</h1>
+        <p class="lead">Experience luxury and comfort like never before</p>
+        <div class="mt-4">
+          <a href="/rooms" class="btn btn-primary btn-lg me-2">Explore Rooms</a>
+          <% if (!currentUser) { %>
+            <a href="/auth/register" class="btn btn-outline-light btn-lg">Register Now</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Rooms Section -->
+<section class="featured-rooms mb-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <h2 class="fw-bold">Featured Rooms</h2>
+        <p class="text-muted">Discover our most popular accommodations</p>
+      </div>
+    </div>
+    <div class="row">
+      <% if (typeof featuredRooms !== 'undefined' && Array.isArray(featuredRooms) && featuredRooms.length > 0) { %>
+        <% featuredRooms.forEach(room => { %>
+          <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm hover-shadow">
+              <img src="<%= room.images && room.images.length > 0 ? room.images[0] : '/img/room-basic.jpg' %>" class="card-img-top" alt="<%= room.type %> Room" style="height: 200px; object-fit: cover;">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title mb-0"><%= room.type %> Room</h5>
+                  <span class="badge bg-primary">$<%= room.price %>/night</span>
+                </div>
+                <p class="card-text text-muted">
+                  <%= room.description && typeof room.description === 'string' ? room.description.substring(0, 100) + (room.description.length > 100 ? '...' : '') : `Experience luxury and comfort in our ${room.type} room.` %>
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted"><i class="fas fa-user-friends me-1"></i><%= room.capacity %> Guests</small>
+                  <a href="/rooms/<%= room._id %>" class="btn btn-sm btn-outline-primary">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="col-12 text-center">
+          <p>No featured rooms available at the moment.</p>
+        </div>
+      <% } %>
+    </div>
+    <div class="text-center mt-4">
+      <a href="/rooms" class="btn btn-outline-dark">View All Rooms</a>
+    </div>
+  </div>
+</section>
+
+<!-- Amenities Section -->
+<section class="amenities mb-5 bg-light py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <h2 class="fw-bold">Hotel Amenities</h2>
+        <p class="text-muted">Enjoy our premium facilities and services</p>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-3 mb-4">
+        <div class="card h-100 border-0 bg-transparent">
+          <div class="card-body">
+            <div class="mb-3 text-primary"><i class="fas fa-swimming-pool fa-3x"></i></div>
+            <h5>Swimming Pool</h5>
+            <p class="text-muted">Relax in our luxurious swimming pool with a beautiful view.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="card h-100 border-0 bg-transparent">
+          <div class="card-body">
+            <div class="mb-3 text-primary"><i class="fas fa-spa fa-3x"></i></div>
+            <h5>Spa & Wellness</h5>
+            <p class="text-muted">Heal your body and mind at our spa.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="card h-100 border-0 bg-transparent">
+          <div class="card-body">
+            <div class="mb-3 text-primary"><i class="fas fa-utensils fa-3x"></i></div>
+            <h5>Fine Dining</h5>
+            <p class="text-muted">Experience high-quality meal at our restaurants.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="card h-100 border-0 bg-transparent">
+          <div class="card-body">
+            <div class="mb-3 text-primary"><i class="fas fa-dumbbell fa-3x"></i></div>
+            <h5>Fitness Center</h5>
+            <p class="text-muted">Stay fit with our state-of-the-art equipment.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Loyalty Program Section -->
+<% if (typeof loyaltyProgram !== 'undefined' && loyaltyProgram) { %>
+  <section class="loyalty-program mb-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h2 class="fw-bold"><%= loyaltyProgram.name %></h2>
+          <p class="lead"><%= loyaltyProgram.description %></p>
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Membership Tiers</h5>
+              <ul class="list-group list-group-flush">
+                <% loyaltyProgram.tiers.forEach(tier => { %>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong><%= tier.name %></strong>
+                      <p class="mb-0 text-muted small"><%= tier.benefits.join(', ') %></p>
+                    </div>
+                    <div>
+                      <span class="badge bg-primary rounded-pill"><%= tier.minimumPoints %> points</span>
+                      <% if (tier.discountPercentage > 0) { %>
+                        <span class="badge bg-success rounded-pill"><%= tier.discountPercentage %>% off</span>
+                      <% } %>
+                    </div>
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+          <% if (!currentUser) { %>
+            <a href="/auth/register" class="btn btn-primary">Join Now</a>
+          <% } else if (currentUser.role === 'customer') { %>
+            <a href="/customer/loyalty" class="btn btn-primary">View Your Status</a>
+          <% } %>
+        </div>
+        <div class="col-md-6">
+          <img src="/img/loyalty-program.jpg" alt="Loyalty Program" class="img-fluid rounded shadow">
+        </div>
+      </div>
+    </div>
+  </section>
+<% } %>
+
+<!-- Testimonials Section -->
+<section class="testimonials mb-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <h2 class="fw-bold">What Our Guests Say</h2>
+        <p class="text-muted">Read testimonials from our satisfied guests</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3 text-warning">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="card-text">"The service was impeccable and the room was absolutely stunning. Will definitely be coming back!"</p>
+            <div class="d-flex align-items-center mt-3">
+              <img src="/img/avatar-1.jpg" alt="Guest" class="rounded-circle" width="50" height="50">
+              <div class="flex-grow-1 ms-3">
+                <h6 class="mb-0">Hoàng Lân</h6>
+                <small class="text-muted">Business Traveler</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3 text-warning">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="card-text">"The spa experience was out of this world. I've never felt so relaxed and pampered."</p>
+            <div class="d-flex align-items-center mt-3">
+              <img src="/img/avatar-2.jpg" alt="Guest" class="rounded-circle" width="50" height="50">
+              <div class="flex-grow-1 ms-3">
+                <h6 class="mb-0">Nguyễn Văn A</h6>
+                <small class="text-muted">Vacation Traveler</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3 text-warning">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+            </div>
+            <p class="card-text">"The food at the restaurant was exceptional. The chef deserves all the praise!"</p>
+            <div class="d-flex align-items-center mt-3">
+              <img src="/img/avatar-3.jpg" alt="Guest" class="rounded-circle" width="50" height="50">
+              <div class="flex-grow-1 ms-3">
+                <h6 class="mb-0">Lê B</h6>
+                <small class="text-muted">Food Enthusiast</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

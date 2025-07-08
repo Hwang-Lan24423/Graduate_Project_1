@@ -1,0 +1,212 @@
+<div class="container py-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="fw-bold">Welcome Back!, <%= currentUser.name %></h1>
+      <p class="text-muted">Manage your bookings and explore our services</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <a href="/customer/book" class="btn btn-primary">
+        <i class="fas fa-plus-circle me-2"></i> Book a Room
+      </a>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-primary text-white p-3 rounded">
+              <i class="fas fa-user fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-0">Your Profile</h5>
+              <p class="text-muted mb-0">Manage your personal information</p>
+            </div>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item px-0 py-2 border-0">
+              <strong>Name:</strong> <%= currentUser.name %>
+            </li>
+            <li class="list-group-item px-0 py-2 border-0">
+              <strong>Email:</strong> <%= currentUser.email %>
+            </li>
+            <li class="list-group-item px-0 py-2 border-0">
+              <strong>Phone:</strong> <%= currentUser.phone || 'Not provided' %>
+            </li>
+          </ul>
+          <a href="/customer/profile" class="btn btn-outline-primary mt-3"
+            >Edit Profile</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-success text-white p-3 rounded">
+              <i class="fas fa-award fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-0">Loyalty Status</h5>
+              <p class="text-muted mb-0">Your rewards and benefits</p>
+            </div>
+          </div>
+          <% if (loyaltyProgram && userTier) { %>
+          <div class="text-center my-3">
+            <div class="display-4 fw-bold text-success">
+              <%= currentUser.loyaltyPoints %>
+            </div>
+            <p class="text-muted">Total Points</p>
+          </div>
+          <div class="card bg-light mb-3">
+            <div class="card-body">
+              <h6 class="card-title">Current Tier: <%= userTier.name %></h6>
+              <p class="card-text small">
+                <% userTier.benefits.forEach(benefit => { %>
+                <span class="badge bg-success me-1 mb-1"><%= benefit %></span>
+                <% }); %>
+              </p>
+            </div>
+          </div>
+          <a href="/customer/loyalty" class="btn btn-outline-success mt-2"
+            >View Details</a
+          >
+          <% } else { %>
+          <div class="text-center my-4">
+            <p>No loyalty information available.</p>
+            <a href="/customer/loyalty" class="btn btn-outline-success"
+              >Join Loyalty Program</a
+            >
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-info text-white p-3 rounded">
+              <i class="fas fa-bell fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-0">Notifications</h5>
+              <p class="text-muted mb-0">Your latest updates</p>
+            </div>
+          </div>
+          <% if (notifications && notifications.length > 0) { %>
+          <div class="notification-list">
+            <% notifications.forEach(notification => { %>
+            <div class="notification-item p-3 mb-2 bg-light rounded">
+              <h6 class="mb-1"><%= notification.title %></h6>
+              <p class="mb-1 small"><%= notification.message %></p>
+              <small class="text-muted">
+                <i class="far fa-clock me-1"></i>
+                <%= new Date(notification.createdAt).toLocaleString() %>
+              </small>
+            </div>
+            <% }); %>
+          </div>
+          <a href="/customer/notifications" class="btn btn-outline-info mt-2"
+            >View All</a
+          >
+          <% } else { %>
+          <div class="text-center my-4">
+            <p>No new notifications.</p>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Active Bookings</h5>
+        </div>
+        <div class="card-body">
+          <% if (activeBookings && activeBookings.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Room</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% activeBookings.forEach(booking => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img
+                        src="<%= booking.room.images && booking.room.images.length > 0 ? booking.room.images[0] : '/img/room-placeholder.jpg' %>"
+                        alt="Room"
+                        class="me-2 rounded"
+                        width="50"
+                        height="50"
+                        style="object-fit: cover"
+                      />
+                      <div>
+                        <div class="fw-bold"><%= booking.room.type %> Room</div>
+                        <div class="small text-muted">
+                          Room #<%= booking.room.roomNumber %>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkInDate).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkOutDate).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <% if (booking.status === 'confirmed') { %>
+                    <span class="badge bg-success">Confirmed</span>
+                    <% } else if (booking.status === 'checked-in') { %>
+                    <span class="badge bg-primary">Checked In</span>
+                    <% } %>
+                  </td>
+                  <td>$<%= booking.totalPrice.toFixed(2) %></td>
+                  <td>
+                    <a
+                      href="/customer/bookings/<%= booking._id %>"
+                      class="btn btn-sm btn-outline-primary"
+                      >Details</a
+                    >
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+          <div class="text-center py-4">
+            <div class="mb-3">
+              <i class="fas fa-bed fa-3x text-muted"></i>
+            </div>
+            <p>You don't have any active bookings.</p>
+            <a href="/customer/book" class="btn btn-primary">Book a Room</a>
+          </div>
+          <% } %>
+        </div>
+        <div class="card-footer bg-white">
+          <a href="/customer/bookings" class="btn btn-link text-decoration-none"
+            >View All Bookings</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/dashboard">Bảng điều khiển</a></li>
+          <li class="breadcrumb-item"><a href="/admin/reports">Báo cáo</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Báo cáo dịch vụ</li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Báo cáo dịch vụ</h1>
+      <p class="text-muted">Xem và phân tích dữ liệu dịch vụ</p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Tổng số dịch vụ</h6>
+          <h2 class="mb-0"><%= stats.totalServices %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Tổng yêu cầu</h6>
+          <h2 class="mb-0"><%= stats.totalRequests %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-3">Dịch vụ phổ biến nhất</h6>
+          <% const popularService = Object.entries(stats.popularServices).sort((a, b) => b[1] - a[1])[0]; %>
+          <% if (popularService) { %>
+            <h5 class="mb-0"><%= popularService[0] %></h5>
+            <small class="text-muted"><%= popularService[1] %> lần yêu cầu</small>
+          <% } else { %>
+            <p class="mb-0 text-muted">Chưa có dữ liệu</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Chi tiết dịch vụ</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Dịch vụ</th>
+                  <th>Loại</th>
+                  <th>Giá</th>
+                  <th>Số lần yêu cầu</th>
+                  <th>Trạng thái</th>
+                  <th>Chi tiết</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% services.forEach(service => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="bg-light rounded p-2 me-3">
+                        <i class="fas fa-<%= service.category === 'room-service' ? 'utensils' : service.category === 'cleaning' ? 'broom' : service.category === 'spa' ? 'spa' : service.category === 'transport' ? 'car' : 'concierge-bell' %> text-primary"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0"><%= service.name %></h6>
+                      </div>
+                    </div>
+                  </td>
+                  <td><%= service.category.charAt(0).toUpperCase() + service.category.slice(1).replace('-', ' ') %></td>
+                  <td>$<%= service.price.toFixed(2) %></td>
+                  <td><%= stats.popularServices[service.name] || 0 %></td>
+                  <td>
+                    <span class="badge bg-<%= service.available ? 'success' : 'danger' %>">
+                      <%= service.available ? 'Có sẵn' : 'Không có sẵn' %>
+                    </span>
+                  </td>
+                  <td>
+                    <a href="/admin/services/<%= service._id %>/edit" class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,141 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Chương trình thành viên
+          </li>
+        </ol>
+      </nav>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h2 mb-0">Quản lý chương trình thành viên</h1>
+          <p class="text-muted">
+            Quản lý các chương trình thành viên và cấp độ thành viên
+          </p>
+        </div>
+        <a href="/admin/loyalty/add" class="btn btn-primary">
+          <i class="fas fa-plus me-2"></i>Thêm chương trình mới
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Chương trình thành viên hiện tại</h5>
+        </div>
+        <div class="card-body p-0">
+          <% if (loyaltyPrograms.length === 0) { %>
+          <div class="text-center py-5">
+            <i class="fas fa-award fa-3x text-muted mb-3"></i>
+            <h5>Không có chương trình thành viên nào</h5>
+            <p class="mb-3">Bạn chưa tạo chương trình thành viên nào.</p>
+            <a href="/admin/loyalty/add" class="btn btn-primary"
+              >Tạo chương trình thành viên</a
+            >
+          </div>    
+          <% } else { %>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Tên chương trình</th>
+                  <th>Số cấp độ</th>
+                  <th>Điểm/USD</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% loyaltyPrograms.forEach(function(program) { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div
+                        class="flex-shrink-0 bg-<%= program.isActive ? 'success' : 'secondary' %> bg-opacity-10 p-2 rounded me-3"
+                      >
+                        <i
+                          class="fas fa-award text-<%= program.isActive ? 'success' : 'secondary' %>"
+                        ></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0"><%= program.name %></h6>
+                        <small class="text-muted"
+                          ><%= program.description.substring(0, 50) %>...</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><%= program.tiers.length %> cấp độ</td>
+                  <td><%= program.pointsPerDollar %></td>
+                  <td>
+                    <span class="badge bg-<%= program.isActive ? 'success' : 'secondary' %>"><%= program.isActive ? 'Đang hoạt động' : 'Không hoạt động' %></span>
+                  </td>
+                  <td>
+                    <%= new Date(program.createdAt).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <a href="/admin/loyalty/<%= program._id %>/edit" class="btn btn-sm btn-outline-primary">Chỉnh sửa</a>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% /* Find active program */ %>
+  <% const activeProgram = loyaltyPrograms && loyaltyPrograms.length > 0 ? loyaltyPrograms.find(function(program) { return program.isActive; }) : null; %>
+  <% if (activeProgram) { %>
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Cấp độ thành viên hiện tại</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <% activeProgram.tiers.forEach(function(tier, index) { %>
+            <div class="col-md-6 col-lg-4 mb-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-header bg-<%= index === 0 ? 'primary' : index === 1 ? 'success' : index === 2 ? 'warning' : 'danger' %> text-white">
+                  <h5 class="mb-0"><%= tier.name %></h5>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <span class="badge bg-<%= index === 0 ? 'primary' : index === 1 ? 'success' : index === 2 ? 'warning' : 'danger' %> px-3 py-2 fs-6"><%= tier.minimumPoints %>+ điểm</span>
+                  </div>
+                  <h6>Quyền lợi:</h6>
+                  <ul class="mb-3">
+                    <% tier.benefits.forEach(function(benefit) { %>
+                    <li><%= benefit %></li>
+                    <% }); %>
+                  </ul>
+                  <% if (tier.discountPercentage > 0) { %>
+                  <div class="alert alert-success mb-0">
+                    <i class="fas fa-tag me-2"></i>
+                    Giảm giá <%= tier.discountPercentage %>% cho tất cả đặt phòng
+                  </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>

@@ -1,0 +1,205 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/staff/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="/staff/customers">Quản lý khách hàng</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Chi tiết khách hàng
+          </li>
+        </ol>
+      </nav>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h2 mb-0"><%= customer.name %></h1>
+          <p class="text-muted">Thông tin chi tiết khách hàng</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-4 mb-4">
+      <!-- Thông tin cơ bản -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <img
+              src="/img/avatar-1.jpg"
+              alt="<%= customer.name %>"
+              class="rounded-circle img-thumbnail"
+              width="100"
+              height="100"
+            />
+          </div>
+          <h5 class="mb-1"><%= customer.name %></h5>
+          <p class="text-muted mb-3"><%= customer.email %></p>
+          <div class="d-flex justify-content-center gap-2">
+            <a
+              href="/staff/customers/<%= customer._id %>/edit"
+              class="btn btn-primary"
+            >
+              <i class="fas fa-edit me-2"></i>Chỉnh sửa
+            </a>
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteCustomer"
+            >
+              <i class="fas fa-trash me-2"></i>Xóa
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thông tin chi tiết -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Thông tin chi tiết</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-3">
+              <small class="text-muted d-block">Số điện thoại</small>
+              <span><%= customer.phone || 'Chưa cập nhật' %></span>
+            </li>
+            <li class="mb-3">
+              <small class="text-muted d-block">Địa chỉ</small>
+              <span><%= customer.address || 'Chưa cập nhật' %></span>
+            </li>
+            <li class="mb-3">
+              <small class="text-muted d-block">Ngày tham gia</small>
+              <span
+                ><%= new Date(customer.createdAt).toLocaleDateString() %></span
+              >
+            </li>
+            <li>
+              <small class="text-muted d-block">Điểm thưởng</small>
+              <span class="badge bg-success"
+                ><%= customer.loyaltyPoints || 0 %> điểm</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <!-- Danh sách đặt phòng -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Lịch sử đặt phòng</h5>
+        </div>
+        <div class="card-body">
+          <% if (bookings.length === 0) { %>
+          <div class="text-center py-4">
+            <i class="fas fa-bed fa-3x text-muted mb-3"></i>
+            <h5>Chưa có đặt phòng nào</h5>
+            <p class="text-muted mb-0">
+              Khách hàng này chưa có lịch sử đặt phòng nào.
+            </p>
+          </div>
+          <% } else { %>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Mã đặt phòng</th>
+                  <th>Phòng</th>
+                  <th>Ngày nhận phòng</th>
+                  <th>Ngày trả phòng</th>
+                  <th>Tổng tiền</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% bookings.forEach(booking => { %>
+                <tr>
+                  <td>
+                    #<%= booking._id.toString().substr(-8).toUpperCase() %>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div>
+                        <div class="fw-bold"><%= booking.room.type %></div>
+                        <small class="text-muted"
+                          >Phòng #<%= booking.room.roomNumber %></small
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkInDate).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkOutDate).toLocaleDateString() %>
+                  </td>
+                  <td>$<%= booking.totalPrice.toFixed(2) %></td>
+                  <td>
+                    <span
+                      class="badge bg-<%= booking.status === 'pending' ? 'warning' : booking.status === 'confirmed' ? 'success' : booking.status === 'checked-in' ? 'primary' : booking.status === 'checked-out' ? 'secondary' : 'danger' %>"
+                    >
+                      <%= booking.status === 'pending' ? 'Đang chờ' :
+                      booking.status === 'confirmed' ? 'Đã xác nhận' :
+                      booking.status === 'checked-in' ? 'Đã nhận phòng' :
+                      booking.status === 'checked-out' ? 'Đã trả phòng' : 'Đã hủy' %>
+                    </span>
+                  </td>
+                  <td>
+                    <a
+                      href="/staff/bookings/<%= booking._id %>"
+                      class="btn btn-sm btn-outline-primary"
+                    >
+                      Chi tiết
+                    </a>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal xóa khách hàng -->
+<!-- <div class="modal fade" id="deleteCustomer" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa khách hàng "<%= customer.name %>"?</p>
+        <p class="text-danger mb-0">Hành động này không thể hoàn tác.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Hủy
+        </button>
+        <form
+          action="/staff/customers/<%= customer._id %>/delete"
+          method="POST"
+          class="d-inline"
+        >
+          <button type="submit" class="btn btn-danger">Xóa</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> -->

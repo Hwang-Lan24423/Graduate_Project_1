@@ -1,0 +1,155 @@
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/staff/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Manage Rooms</li>
+          </ol>
+        </nav>
+        <h1 class="fw-bold">Manage Rooms</h1>
+        <p class="text-muted">View and update room status and information</p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <a href="/staff/dashboard" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+  
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white">
+        <h5 class="mb-0">Filter Rooms</h5>
+      </div>
+      <div class="card-body">
+        <form id="roomFilterForm" action="/staff/rooms" method="GET" class="row g-3">
+          <div class="col-md-4">
+            <label for="status" class="form-label">Room Status</label>
+            <select class="form-select" id="status" name="status">
+              <option value="all" <%= currentStatus === 'all' ? 'selected' : '' %>>All Statuses</option>
+              <option value="available" <%= currentStatus === 'available' ? 'selected' : '' %>>Available</option>
+              <option value="occupied" <%= currentStatus === 'occupied' ? 'selected' : '' %>>Occupied</option>
+              <option value="maintenance" <%= currentStatus === 'maintenance' ? 'selected' : '' %>>Maintenance</option>
+              <option value="cleaning" <%= currentStatus === 'cleaning' ? 'selected' : '' %>>Cleaning</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label for="type" class="form-label">Room Type</label>
+            <select class="form-select" id="type" name="type">
+              <option value="all" <%= currentType === 'all' ? 'selected' : '' %>>All Types</option>
+              <option value="Standard" <%= currentType === 'Standard' ? 'selected' : '' %>>Standard</option>
+              <option value="Deluxe" <%= currentType === 'Deluxe' ? 'selected' : '' %>>Deluxe</option>
+              <option value="Suite" <%= currentType === 'Suite' ? 'selected' : '' %>>Suite</option>
+              <option value="Presidential" <%= currentType === 'Presidential' ? 'selected' : '' %>>Presidential</option>
+            </select>
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">
+              <i class="fas fa-filter me-2"></i> Filter
+            </button>
+            <a href="/staff/rooms" class="btn btn-outline-secondary">
+              <i class="fas fa-redo me-2"></i> Reset
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+    <div class="row">
+      <% if (rooms && rooms.length > 0) { %>
+        <% rooms.forEach(room => { %>
+          <div class="col-md-3 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-header bg-white position-relative">
+                <h5 class="mb-0">Room #<%= room.roomNumber %></h5>
+                <span class="position-absolute top-0 end-0 mt-2 me-2 room-status status-<%= room.status %>">
+                  <%= room.status.charAt(0).toUpperCase() + room.status.slice(1) %>
+                </span>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Type:</span>
+                    <span class="fw-bold"><%= room.type %></span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Price:</span>
+                    <span class="fw-bold">$<%= room.price.toFixed(2) %>/night</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Capacity:</span>
+                    <span class="fw-bold"><%= room.capacity %> Guests</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Floor:</span>
+                    <span class="fw-bold"><%= room.floor %></span>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <h6 class="mb-2">Amenities:</h6>
+                  <div>
+                    <% if (room.amenities && room.amenities.length > 0) { %>
+                      <% room.amenities.forEach(amenity => { %>
+                        <span class="badge bg-light text-dark me-1 mb-1"><%= amenity %></span>
+                      <% }); %>
+                    <% } else { %>
+                      <p class="text-muted small">No amenities listed</p>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer bg-white">
+                <form action="/staff/rooms/<%= room._id %>/status" method="POST" class="mb-2">
+                  <div class="input-group">
+                    <select class="form-select form-select-sm" name="status" required>
+                      <option value="available" <%= room.status === 'available' ? 'selected' : '' %>>Available</option>
+                      <option value="occupied" <%= room.status === 'occupied' ? 'selected' : '' %>>Occupied</option>
+                      <option value="maintenance" <%= room.status === 'maintenance' ? 'selected' : '' %>>Maintenance</option>
+                      <option value="cleaning" <%= room.status === 'cleaning' ? 'selected' : '' %>>Cleaning</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="col-12">
+          <div class="alert alert-info">
+            No rooms found matching your criteria.
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  
+  <style>
+    .room-status {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    
+    .status-available {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    .status-occupied {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .status-maintenance {
+      background-color: #ffc107;
+      color: black;
+    }
+    
+    .status-cleaning {
+      background-color: #17a2b8;
+      color: white;
+    }
+  </style>

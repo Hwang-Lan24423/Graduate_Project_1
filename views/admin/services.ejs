@@ -1,0 +1,193 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Quản lý dịch vụ
+          </li>
+        </ol>
+      </nav>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h2 mb-0">Quản lý dịch vụ</h1>
+          <p class="text-muted">Quản lý các dịch vụ của khách sạn</p>
+        </div>
+        <a href="/admin/services/add" class="btn btn-primary">
+          <i class="fas fa-plus-circle me-2"></i>Thêm dịch vụ mới
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <% if (services && services.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Tên dịch vụ</th>
+                  <th>Danh mục</th>
+                  <th>Giá</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% services.forEach(service => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div
+                        class="bg-<%= service.category === 'room-service' ? 'primary' : service.category === 'cleaning' ? 'success' : service.category === 'food' ? 'warning' : service.category === 'spa' ? 'info' : service.category === 'transport' ? 'danger' : 'secondary' %> bg-opacity-10 p-2 rounded me-3"
+                      >
+                        <i
+                          class="fas fa-<%= service.category === 'room-service' ? 'utensils' : service.category === 'cleaning' ? 'broom' : service.category === 'food' ? 'hamburger' : service.category === 'spa' ? 'spa' : service.category === 'transport' ? 'car' : 'concierge-bell' %> text-<%= service.category === 'room-service' ? 'primary' : service.category === 'cleaning' ? 'success' : service.category === 'food' ? 'warning' : service.category === 'spa' ? 'info' : service.category === 'transport' ? 'danger' : 'secondary' %>"
+                        ></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0"><%= service.name %></h6>
+                        <small class="text-muted"
+                          ><%= service.description.substring(0, 50) %>...</small
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="text-capitalize"
+                      ><%= service.category.replace('-', ' ') %></span
+                    >
+                  </td>
+                  <td>$<%= service.price.toFixed(2) %></td>
+                  <td>
+                    <span
+                      class="badge bg-<%= service.available ? 'success' : 'secondary' %>"
+                    >
+                      <%= service.available ? 'Có sẵn' : 'Không có sẵn' %>
+                    </span>
+                  </td>
+                  <td>
+                    <%= new Date(service.createdAt).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <a
+                        href="/admin/services/<%= service._id %>/edit"
+                        class="btn btn-outline-primary"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteService<%= service._id %>"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+
+                    <!-- Delete Modal -->
+                    <div
+                      class="modal fade"
+                      id="deleteService<%= service._id %>"
+                      tabindex="-1"
+                    >
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Xác nhận xóa</h5>
+                            <button
+                              type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>
+                              Bạn có chắc chắn muốn xóa dịch vụ "<%=
+                              service.name %>"?
+                            </p>
+                            <p class="text-danger mb-0">
+                              Hành động này không thể hoàn tác.
+                            </p>
+                          </div>
+                          <div class="modal-footer">
+                            <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                            >
+                              Hủy
+                            </button>
+                            <form
+                              action="/admin/services/<%= service._id %>/delete"
+                              method="POST"
+                              class="d-inline"
+                            >
+                              <button type="submit" class="btn btn-danger">
+                                Xóa
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+          <div class="text-center py-5">
+            <i class="fas fa-concierge-bell fa-3x text-muted mb-3"></i>
+            <h5>Chưa có dịch vụ nào</h5>
+            <p class="text-muted">
+              Bắt đầu bằng cách thêm dịch vụ mới cho khách sạn
+            </p>
+            <a href="/admin/services/add" class="btn btn-primary">
+              <i class="fas fa-plus-circle me-2"></i>Thêm dịch vụ
+            </a>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+  }
+
+  .btn-group .btn {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .btn-group .btn i {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .service-icon {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+</style>

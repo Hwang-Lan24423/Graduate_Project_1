@@ -1,0 +1,153 @@
+<div class="container py-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin/dashboard">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Quản lý đánh giá</li>
+          </ol>
+        </nav>
+        <h1 class="h2 mb-0">Quản lý đánh giá</h1>
+        <p class="text-muted">Xem và quản lý đánh giá của khách hàng</p>
+      </div>
+    </div>
+  
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <form method="GET" action="/admin/reviews">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="approved" class="form-label">Trạng thái</label>
+                  <select class="form-select" id="approved" name="approved">
+                    <option value="all" <%= currentFilter === 'all' ? 'selected' : '' %>>Tất cả</option>
+                    <option value="true" <%= currentFilter === 'true' ? 'selected' : '' %>>Đã duyệt</option>
+                    <option value="false" <%= currentFilter === 'false' ? 'selected' : '' %>>Chưa duyệt</option>
+                  </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                  <button type="submit" class="btn btn-primary w-100">Lọc</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <% if (reviews && reviews.length > 0) { %>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Khách hàng</th>
+                    <th>Phòng</th>
+                    <th>Đánh giá</th>
+                    <th>Bình luận</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% reviews.forEach(review => { %>
+                  <tr>
+                    <td><%= review.customer ? review.customer.name : 'N/A' %></td>
+                    <td>
+                      <% if (review.booking && review.booking.room) { %>
+                        Phòng <%= review.booking.room.roomNumber %>
+                      <% } else { %>
+                        N/A
+                      <% } %>
+                    </td>
+                    <td>
+                      <div class="text-warning">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                        <i class="fas fa-star<%= i <= review.rating ? '' : '-o' %>"></i>
+                        <% } %>
+                      </div>
+                    </td>
+                    <td><%= review.comment || 'Không có bình luận' %></td>
+                    <td>
+                      <% if (review.isApproved) { %>
+                        <span class="badge bg-success">Đã duyệt</span>
+                      <% } else { %>
+                        <span class="badge bg-warning">Chưa duyệt</span>
+                      <% } %>
+                    </td>
+                    <td><%= new Date(review.createdAt).toLocaleDateString() %></td>
+                    <td>
+                      <% if (!review.isApproved) { %>
+                      <form action="/admin/reviews/<%= review._id %>" method="POST" class="d-inline">
+                        <input type="hidden" name="isApproved" value="true">
+                        <button type="submit" class="btn btn-sm btn-success">
+                          <i class="fas fa-check"></i> Duyệt
+                        </button>
+                      </form>
+                      <% } %>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#responseModal<%= review._id %>"
+                      >
+                        <i class="fas fa-reply"></i> Phản hồi
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Response Modal -->
+                  <div class="modal fade" id="responseModal<%= review._id %>" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <form action="/admin/reviews/<%= review._id %>" method="POST">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Phản hồi đánh giá</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="mb-3">
+                              <label class="form-label">Nội dung đánh giá</label>
+                              <p class="mb-3"><%= review.comment || 'Không có bình luận' %></p>
+                              <label for="adminResponse" class="form-label">Phản hồi của bạn</label>
+                              <textarea
+                                class="form-control"
+                                id="adminResponse"
+                                name="adminResponse"
+                                rows="3"
+                                required
+                              ><%= review.adminResponse || '' %></textarea>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <input type="hidden" name="isApproved" value="true">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                              Đóng
+                            </button>
+                            <button type="submit" class="btn btn-primary">Gửi phản hồi</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            <% } else { %>
+            <div class="text-center py-5">
+              <p class="mb-0 text-muted">Chưa có đánh giá nào.</p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+

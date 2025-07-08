@@ -1,0 +1,118 @@
+<div class="container py-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin/dashboard">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/admin/users">Quản lý người dùng</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Thêm người dùng</li>
+          </ol>
+        </nav>
+        <h1 class="h2 mb-0">Thêm người dùng mới</h1>
+        <p class="text-muted">Tạo tài khoản người dùng mới với vai trò cụ thể</p>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <form action="/admin/users/add" method="POST">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="name" class="form-label">Họ và tên</label>
+                  <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="col-md-6  id="email" name="email" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="password" class="form-label">Mật khẩu</label>
+                  <input type="password" class="form-control" id="password" name="password" required>
+                  <small class="text-muted">Mật khẩu phải có ít nhất 6 ký tự</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="role" class="form-label">Vai trò</label>
+                  <select class="form-select" id="role" name="role" required>
+                    <option value="" selected disabled>Chọn vai trò</option>
+                    <option value="customer">Customer</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="phone" class="form-label">Số điện thoại</label>
+                  <input type="tel" class="form-control" id="phone" name="phone">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="loyaltyPoints" class="form-label">Điểm thưởng</label>
+                  <input type="number" class="form-control" id="loyaltyPoints" name="loyaltyPoints" min="0" value="0">
+                  <small class="text-muted">Chỉ áp dụng cho tài khoản khách hàng</small>
+                </div>
+                <div class="col-12 mb-3">
+                  <label for="address" class="form-label">Địa chỉ</label>
+                  <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">Tạo người dùng</button>
+                  <a href="/admin/users" class="btn btn-outline-secondary">Hủy</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Thông tin vai trò</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-4">
+              <h6 class="d-flex align-items-center">
+                <span class="badge bg-primary me-2">Khách hàng</span>
+                <span>Quyền hạn của khách hàng</span>
+              </h6>
+              <ul class="small text-muted ps-4 mb-0">
+                <li>Đặt phòng và quản lý đặt phòng</li>
+                <li>Yêu cầu dịch vụ</li>
+                <li>Xem lịch sử đặt phòng</li>
+                <li>Viết đánh giá</li>
+                <li>Tham gia chương trình thành viên</li>
+              </ul>
+            </div>
+            <div class="mb-4">
+              <h6 class="d-flex align-items-center">
+                <span class="badge bg-success me-2">Nhân viên</span>
+                <span>Quyền hạn của nhân viên</span>
+              </h6>
+              <ul class="small text-muted ps-4 mb-0">
+                <li>Quản lý đặt phòng</li>
+                <li>Quản lý phòng</li>
+                <li>Xử lý yêu cầu dịch vụ</li>
+                <li>Quản lý khách hàng</li>
+                <li>Xử lý thanh toán</li>
+              </ul>
+            </div>
+            <div>
+              <h6 class="d-flex align-items-center">
+                <span class="badge bg-danger me-2">Quản trị viên</span>
+                <span>Quyền hạn của quản trị viên</span>
+              </h6>
+              <ul class="small text-muted ps-4 mb-0">
+                <li>Tất cả quyền của nhân viên</li>
+                <li>Quản lý người dùng</li>
+                <li>Quản lý dịch vụ</li>
+                <li>Quản lý chương trình thành viên</li>
+                <li>Xem báo cáo và thống kê</li>
+                <li>Cấu hình hệ thống</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

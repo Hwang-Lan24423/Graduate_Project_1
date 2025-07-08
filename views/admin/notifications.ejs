@@ -1,0 +1,437 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Gửi thông báo
+          </li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Gửi thông báo</h1>
+      <p class="text-muted">Gửi thông báo đến người dùng</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 mb-4 mb-lg-0">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Tạo thông báo mới</h5>
+        </div>
+        <div class="card-body p-4">
+          <form action="/admin/notifications" method="POST">
+            <div class="mb-3">
+              <label for="recipients" class="form-label">Người nhận</label>
+              <select
+                class="form-select"
+                id="recipients"
+                name="recipients"
+                required
+              >
+                <option value="" selected disabled>Chọn người nhận</option>
+                <option value="all">Tất cả người dùng</option>
+                <option value="customers">Tất cả khách hàng</option>
+                <option value="staff">Tất cả nhân viên</option>
+                <optgroup label="Người dùng cụ thể">
+                  <% users.forEach(user => { %>
+                  <option value="<%= user._id %>">
+                    <%= user.name %> (<%= user.email %>) - <%= user.role ===
+                    'admin' ? 'Quản trị viên' : user.role === 'staff' ? 'Nhân
+                    viên' : 'Khách hàng' %>
+                  </option>
+                  <% }); %>
+                </optgroup>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="title" class="form-label">Tiêu đề</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Nội dung</label>
+              <textarea
+                class="form-control"
+                id="message"
+                name="message"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="type" class="form-label">Loại thông báo</label>
+              <select class="form-select" id="type" name="type" required>
+                <option value="system" selected>Hệ thống</option>
+                <option value="booking">Đặt phòng</option>
+                <option value="service">Dịch vụ</option>
+                <option value="payment">Thanh toán</option>
+                <option value="other">Khác</option>
+              </select>
+            </div>
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="important"
+                name="important"
+              />
+              <label class="form-check-label" for="important">
+                Đánh dấu là quan trọng
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Gửi thông báo</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Xem trước</h5>
+        </div>
+        <div class="card-body">
+          <div class="notification-preview p-3 border rounded mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0" id="previewTitle">Tiêu đề thông báo</h6>
+              <small class="text-muted"
+                ><%= new Date().toLocaleString() %></small
+              >
+            </div>
+            <p class="mb-2" id="previewMessage">
+              Nội dung thông báo sẽ hiển thị ở đây.
+            </p>
+            <div>
+              <span class="badge bg-primary" id="previewType">Hệ thống</span>
+              <span class="badge bg-danger d-none" id="previewImportant"
+                >Quan trọng</span
+              >
+            </div>
+          </div>
+          <div class="alert alert-info mb-0">
+            <i class="fas fa-info-circle me-2"></i>
+            Điền thông tin vào biểu mẫu để xem trước thông báo.
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Hướng dẫn</h5>
+        </div>
+        <div class="card-body">
+          <h6>Người nhận</h6>
+          <p class="small text-muted mb-3">
+            Chọn người nhận thông báo. Bạn có thể gửi cho tất cả người dùng, tất
+            cả khách hàng, tất cả nhân viên hoặc một người dùng cụ thể.
+          </p>
+
+          <h6>Tiêu đề</h6>
+          <p class="small text-muted mb-3">
+            Tiêu đề ngắn gọn và rõ ràng để người dùng hiểu nhanh nội dung thông
+            báo.
+          </p>
+
+          <h6>Loại thông báo</h6>
+          <p class="small text-muted mb-3">
+            Chọn loại thông báo phù hợp để người dùng dễ dàng phân loại.
+          </p>
+
+          <h6>Đánh dấu quan trọng</h6>
+          <p class="small text-muted">
+            Chỉ đánh dấu thông báo là quan trọng khi nó thực sự cần sự chú ý
+            ngay lập tức từ người dùng.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const titleInput = document.getElementById("title");
+    const messageInput = document.getElementById("message");
+    const typeSelect = document.getElementById("type");
+    const importantCheck = document.getElementById("important");
+
+    const previewTitle = document.getElementById("previewTitle");
+    const previewMessage = document.getElementById("previewMessage");
+    const previewType = document.getElementById("previewType");
+    const previewImportant = document.getElementById("previewImportant");
+
+    // Update preview on input change
+    titleInput.addEventListener("input", updatePreview);
+    messageInput.addEventListener("input", updatePreview);
+    typeSelect.addEventListener("change", updatePreview);
+    importantCheck.addEventListener("change", updatePreview);
+
+    function updatePreview() {
+      previewTitle.textContent = titleInput.value || "Tiêu đề thông báo";
+      previewMessage.textContent =
+        messageInput.value || "Nội dung thông báo sẽ hiển thị ở đây.";
+
+      // Update type badge
+      const typeValue = typeSelect.value;
+      previewType.textContent =
+        typeValue === "system"
+          ? "Hệ thống"
+          : typeValue === "booking"
+          ? "Đặt phòng"
+          : typeValue === "service"
+          ? "Dịch vụ"
+          : typeValue === "payment"
+          ? "Thanh toán"
+          : "Khác";
+
+      previewType.className =
+        "badge " +
+        (typeValue === "system"
+          ? "bg-primary"
+          : typeValue === "booking"
+          ? "bg-success"
+          : typeValue === "service"
+          ? "bg-warning"
+          : typeValue === "payment"
+          ? "bg-info"
+          : "bg-secondary");
+
+      // Show/hide important badge
+      if (importantCheck.checked) {
+        previewImportant.classList.remove("d-none");
+      } else {
+        previewImportant.classList.add("d-none");
+      }
+    }
+  });
+</script>
+
+### 1.13. `views/admin/reports.ejs` ```html
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Báo cáo</li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Báo cáo</h1>
+      <p class="text-muted">Xem và tạo báo cáo cho khách sạn</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded">
+              <i class="fas fa-calendar-check text-primary fa-2x"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="mb-0">Báo cáo đặt phòng</h5>
+            </div>
+          </div>
+          <p>
+            Xem báo cáo chi tiết về đặt phòng, bao gồm số lượng đặt phòng, tỷ lệ
+            hủy, và doanh thu từ đặt phòng.
+          </p>
+          <a href="/admin/reports/bookings" class="btn btn-outline-primary"
+            >Xem báo cáo</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded">
+              <i class="fas fa-dollar-sign text-success fa-2x"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="mb-0">Báo cáo doanh thu</h5>
+            </div>
+          </div>
+          <p>
+            Xem báo cáo chi tiết về doanh thu, bao gồm doanh thu theo ngày,
+            tháng, và năm, cũng như doanh thu theo loại phòng và dịch vụ.
+          </p>
+          <a href="/admin/reports/revenue" class="btn btn-outline-success"
+            >Xem báo cáo</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-info bg-opacity-10 p-3 rounded">
+              <i class="fas fa-users text-info fa-2x"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="mb-0">Báo cáo khách hàng</h5>
+            </div>
+          </div>
+          <p>
+            Xem báo cáo chi tiết về khách hàng, bao gồm số lượng khách hàng mới,
+            khách hàng thường xuyên, và chi tiêu trung bình của khách hàng.
+          </p>
+          <a href="/admin/reports/customers" class="btn btn-outline-info"
+            >Xem báo cáo</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded">
+              <i class="fas fa-bed text-warning fa-2x"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="mb-0">Báo cáo phòng</h5>
+            </div>
+          </div>
+          <p>
+            Xem báo cáo chi tiết về phòng, bao gồm tỷ lệ lấp đầy, phòng phổ biến
+            nhất, và doanh thu theo loại phòng.
+          </p>
+          <a href="/admin/reports/rooms" class="btn btn-outline-warning"
+            >Xem báo cáo</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-danger bg-opacity-10 p-3 rounded">
+              <i class="fas fa-concierge-bell text-danger fa-2x"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="mb-0">Báo cáo dịch vụ</h5>
+            </div>
+          </div>
+          <p>
+            Xem báo cáo chi tiết về dịch vụ, bao gồm dịch vụ phổ biến nhất,
+            doanh thu từ dịch vụ, và đánh giá dịch vụ.
+          </p>
+          <a href="/admin/reports/services" class="btn btn-outline-danger"
+            >Xem báo cáo</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-secondary bg-opacity-10 p-3 rounded">
+              <i class="fas fa-star text-secondary fa-2x"></i>
+            </div>
+            <div class="ms-3">
+              <h5 class="mb-0">Báo cáo đánh giá</h5>
+            </div>
+          </div>
+          <p>
+            Xem báo cáo chi tiết về đánh giá của khách hàng, bao gồm đánh giá
+            trung bình, đánh giá theo loại phòng, và xu hướng đánh giá theo thời
+            gian.
+          </p>
+          <a href="/admin/reports/reviews" class="btn btn-outline-secondary"
+            >Xem báo cáo</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Tạo báo cáo tùy chỉnh</h5>
+        </div>
+        <div class="card-body p-4">
+          <form action="/admin/reports/custom" method="GET">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="reportType" class="form-label">Loại báo cáo</label>
+                <select
+                  class="form-select"
+                  id="reportType"
+                  name="reportType"
+                  required
+                >
+                  <option value="" selected disabled>Chọn loại báo cáo</option>
+                  <option value="bookings">Đặt phòng</option>
+                  <option value="revenue">Doanh thu</option>
+                  <option value="customers">Khách hàng</option>
+                  <option value="rooms">Phòng</option>
+                  <option value="services">Dịch vụ</option>
+                  <option value="reviews">Đánh giá</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="startDate" class="form-label">Từ ngày</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="startDate"
+                  name="startDate"
+                />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="endDate" class="form-label">Đến ngày</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="endDate"
+                  name="endDate"
+                />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="groupBy" class="form-label">Nhóm theo</label>
+                <select class="form-select" id="groupBy" name="groupBy">
+                  <option value="day">Ngày</option>
+                  <option value="week">Tuần</option>
+                  <option value="month" selected>Tháng</option>
+                  <option value="year">Năm</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="format" class="form-label">Định dạng</label>
+                <select class="form-select" id="format" name="format">
+                  <option value="web" selected>Web</option>
+                  <option value="pdf">PDF</option>
+                  <option value="excel">Excel</option>
+                  <option value="csv">CSV</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                  Tạo báo cáo
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

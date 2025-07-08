@@ -1,0 +1,247 @@
+<div class="container py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/customer/dashboard">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Book a Room
+          </li>
+        </ol>
+      </nav>
+      <h1 class="fw-bold">Book a Room</h1>
+      <p class="text-muted">Select your preferred room and dates</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Booking Details</h5>
+          <form action="/customer/book" method="POST">
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <label for="checkInDate" class="form-label"
+                  >Check-in Date</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="checkInDate"
+                  name="checkInDate"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="checkOutDate" class="form-label"
+                  >Check-out Date</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="checkOutDate"
+                  name="checkOutDate"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="roomId" class="form-label">Select Room</label>
+              <select class="form-select" id="roomId" name="roomId" required>
+                <option value="" selected disabled>Choose a room...</option>
+                <% if (rooms && rooms.length > 0) { %> <% rooms.forEach(room =>
+                { %>
+                <option value="<%= room._id %>" data-price="<%= room.price %>">
+                  <%= room.type %> Room - $<%= room.price %>/night (Room #<%=
+                  room.roomNumber %>)
+                </option>
+                <% }); %> <% } %>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="specialRequests" class="form-label"
+                >Special Requests (Optional)</label
+              >
+              <textarea
+                class="form-control"
+                id="specialRequests"
+                name="specialRequests"
+                rows="3"
+                placeholder="Any special requests or preferences?"
+              ></textarea>
+            </div>
+
+            <div class="alert alert-info mb-4">
+              <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                  <i class="fas fa-info-circle fa-2x me-3"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="alert-heading mb-1">Booking Information</h6>
+                  <p class="mb-0 small">
+                    Your booking will be confirmed after review. You can cancel
+                    your booking up to 24 hours before check-in without any
+                    changes.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Confirm Booking
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm mb-4 sticky-top" style="top: 20px">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Booking Summary</h5>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Room:</span>
+              <span id="summaryRoom">-</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Check-in:</span>
+              <span id="summaryCheckIn">-</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Check-out:</span>
+              <span id="summaryCheckOut">-</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Nights:</span>
+              <span id="summaryNxights">-</span>
+            </div>
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between mb-2">
+            <span>Room Rate:</span>
+            <span id="summaryRate">$0.00</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Taxes & Fees:</span>
+            <span id="summaryTaxes">$0.00</span>
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between fw-bold">
+            <span>Total:</span>
+            <span id="totalPrice">$0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Need Help?</h5>
+          <p class="card-text">
+            If you have any questions or need assistance with your booking,
+            please contact our customer service.
+          </p>
+          <div class="d-grid">
+            <a href="/contact" class="btn btn-outline-primary">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkInInput = document.getElementById("checkInDate");
+    const checkOutInput = document.getElementById("checkOutDate");
+    const roomSelect = document.getElementById("roomId");
+
+    const summaryRoom = document.getElementById("summaryRoom");
+    const summaryCheckIn = document.getElementById("summaryCheckIn");
+    const summaryCheckOut = document.getElementById("summaryCheckOut");
+    const summaryNights = document.getElementById("summaryNights");
+    const summaryRate = document.getElementById("summaryRate");
+    const summaryTaxes = document.getElementById("summaryTaxes");
+    const totalPrice = document.getElementById("totalPrice");
+
+    // Set min date to today for check-in
+    const today = new Date().toISOString().split("T")[0];
+    checkInInput.setAttribute("min", today);
+
+    // Update checkout min date when checkin changes
+    checkInInput.addEventListener("change", function () {
+      const checkInDate = new Date(this.value);
+      checkInDate.setDate(checkInDate.getDate() + 1);
+      const minCheckOutDate = checkInDate.toISOString().split("T")[0];
+      checkOutInput.setAttribute("min", minCheckOutDate);
+
+      // If current checkout date is before new min, update it
+      if (
+        checkOutInput.value &&
+        new Date(checkOutInput.value) <= new Date(this.value)
+      ) {
+        checkOutInput.value = minCheckOutDate;
+      }
+
+      updateSummary();
+    });
+
+    checkOutInput.addEventListener("change", updateSummary);
+    roomSelect.addEventListener("change", updateSummary);
+
+    function updateSummary() {
+      // Get selected room
+      const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+      const roomName = selectedOption
+        ? selectedOption.text.split(" - ")[0]
+        : "-";
+      const roomPrice = selectedOption
+        ? parseFloat(selectedOption.getAttribute("data-price"))
+        : 0;
+
+      // Get dates
+      const checkIn = checkInInput.value ? new Date(checkInInput.value) : null;
+      const checkOut = checkOutInput.value
+        ? new Date(checkOutInput.value)
+        : null;
+
+      // Update summary
+      summaryRoom.textContent = roomName !== "-" ? roomName : "-";
+      summaryCheckIn.textContent = checkIn ? checkIn.toLocaleDateString() : "-";
+      summaryCheckOut.textContent = checkOut
+        ? checkOut.toLocaleDateString()
+        : "-";
+
+      // Calculate nights
+      let nights = 0;
+      if (checkIn && checkOut) {
+        const timeDiff = checkOut.getTime() - checkIn.getTime();
+        nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      }
+
+      summaryNights.textContent = nights > 0 ? nights : "-";
+
+      // Calculate costs
+      const roomTotal = nights * roomPrice;
+      const taxRate = 0.12; // 12% tax
+      const taxes = roomTotal * taxRate;
+      const grandTotal = roomTotal + taxes;
+
+      summaryRate.textContent =
+        roomTotal > 0 ? `$${roomTotal.toFixed(2)}` : "$0.00";
+      summaryTaxes.textContent = taxes > 0 ? `$${taxes.toFixed(2)}` : "$0.00";
+      totalPrice.textContent =
+        grandTotal > 0 ? `$${grandTotal.toFixed(2)}` : "$0.00";
+    }
+
+    // Initial update
+    updateSummary();
+  });
+</script>

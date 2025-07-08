@@ -1,0 +1,372 @@
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="fw-bold">Staff Dashboard</h1>
+      <p class="text-muted">Manage bookings, rooms, and customer requests</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <div class="btn-group">
+        <a href="/staff/bookings" class="btn btn-outline-primary">
+          <i class="fas fa-calendar-alt me-2"></i> All Bookings
+        </a>
+        <a href="/staff/rooms" class="btn btn-outline-primary">
+          <i class="fas fa-door-open me-2"></i> Manage Rooms
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-primary text-white p-3 rounded">
+              <i class="fas fa-calendar-check fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-0">Today's Check-ins</h5>
+            </div>
+          </div>
+          <div class="display-4 fw-bold text-center mb-3">
+            <%= todayCheckIns ? todayCheckIns.length : 0 %>
+          </div>
+          <a
+            href="/staff/bookings?status=confirmed"
+            class="btn btn-sm btn-outline-primary d-block"
+            >View All</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-warning text-white p-3 rounded">
+              <i class="fas fa-clock fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-0">Pending Bookings</h5>
+            </div>
+          </div>
+          <div class="display-4 fw-bold text-center mb-3">
+            <%= pendingBookings ? pendingBookings.length : 0 %>
+          </div>
+          <a
+            href="/staff/bookings?status=pending"
+            class="btn btn-sm btn-outline-warning d-block"
+            >View All</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-success text-white p-3 rounded">
+              <i class="fas fa-concierge-bell fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-0">Service Requests</h5>
+            </div>
+          </div>
+          <div class="display-4 fw-bold text-center mb-3">
+            <%= pendingServiceRequests ? pendingServiceRequests.length : 0 %>
+          </div>
+          <a
+            href="/staff/service-requests"
+            class="btn btn-sm btn-outline-success d-block"
+            >View All</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0 bg-info text-white p-3 rounded">
+              <i class="fas fa-users fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-0">Customer Management</h5>
+            </div>
+          </div>
+          <p class="card-text">
+            View and manage customer information and bookings.
+          </p>
+          <a href="/staff/customers" class="btn btn-sm btn-outline-info d-block"
+            >Manage Customers</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div
+          class="card-header bg-white d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Pending Bookings</h5>
+          <a
+            href="/staff/bookings?status=pending"
+            class="btn btn-sm btn-link text-decoration-none"
+            >View All</a
+          >
+        </div>
+        <div class="card-body">
+          <% if (pendingBookings && pendingBookings.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Room</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% pendingBookings.forEach(booking => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-circle me-2 bg-primary text-white">
+                        <%= booking.customer.name.charAt(0).toUpperCase() %>
+                      </div>
+                      <div>
+                        <div class="fw-bold"><%= booking.customer.name %></div>
+                        <div class="small text-muted">
+                          <%= booking.customer.email %>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="fw-bold"><%= booking.room.type %></div>
+                    <div class="small text-muted">
+                      Room #<%= booking.room.roomNumber %>
+                    </div>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkInDate).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkOutDate).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <a
+                      href="/staff/bookings/<%= booking._id %>"
+                      class="btn btn-sm btn-outline-primary"
+                      >Details</a
+                    >
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+          <div class="text-center py-4">
+            <div class="mb-3">
+              <i class="fas fa-calendar-check fa-3x text-muted"></i>
+            </div>
+            <p>No pending bookings at the moment.</p>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div
+          class="card-header bg-white d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Today's Check-ins</h5>
+          <a
+            href="/staff/bookings?status=confirmed"
+            class="btn btn-sm btn-link text-decoration-none"
+            >View All</a
+          >
+        </div>
+        <div class="card-body">
+          <% if (todayCheckIns && todayCheckIns.length > 0) { %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Room</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% todayCheckIns.forEach(booking => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-circle me-2 bg-primary text-white">
+                        <%= booking.customer.name.charAt(0).toUpperCase() %>
+                      </div>
+                      <div>
+                        <div class="fw-bold"><%= booking.customer.name %></div>
+                        <div class="small text-muted">
+                          <%= booking.customer.email %>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="fw-bold"><%= booking.room.type %></div>
+                    <div class="small text-muted">
+                      Room #<%= booking.room.roomNumber %>
+                    </div>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkInDate).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <%= new Date(booking.checkOutDate).toLocaleDateString() %>
+                  </td>
+                  <td>
+                    <a
+                      href="/staff/bookings/<%= booking._id %>"
+                      class="btn btn-sm btn-outline-primary"
+                      >Details</a
+                    >
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+          <div class="text-center py-4">
+            <div class="mb-3">
+              <i class="fas fa-calendar-day fa-3x text-muted"></i>
+            </div>
+            <p>No check-ins scheduled for today.</p>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div
+          class="card-header bg-white d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">Pending Service Requests</h5>
+          <a
+            href="/staff/service-requests"
+            class="btn btn-sm btn-link text-decoration-none"
+            >View All</a
+          >
+        </div>
+        <div class="card-body">
+          <% if (pendingServiceRequests && pendingServiceRequests.length > 0) {
+          %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Room</th>
+                  <th>Service</th>
+                  <th>Requested</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% pendingServiceRequests.forEach(request => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-circle me-2 bg-primary text-white">
+                        <%= request.customer.name.charAt(0).toUpperCase() %>
+                      </div>
+                      <div>
+                        <div class="fw-bold"><%= request.customer.name %></div>
+                        <div class="small text-muted">
+                          <%= request.customer.email %>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="fw-bold"><%= request.booking.room.type %></div>
+                    <div class="small text-muted">
+                      Room #<%= request.booking.room.roomNumber %>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="fw-bold"><%= request.service.name %></div>
+                    <div class="small text-muted">
+                      <%= request.service.category %>
+                    </div>
+                  </td>
+                  <td><%= new Date(request.requestDate).toLocaleString() %></td>
+                  <td>
+                    <form
+                      action="/staff/service-requests/<%= request._id %>"
+                      method="POST"
+                      class="d-inline"
+                    >
+                      <input type="hidden" name="status" value="in-progress" />
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-primary"
+                      >
+                        Process
+                      </button>
+                    </form>
+                    <a
+                      href="/staff/bookings/<%= request.booking._id %>"
+                      class="btn btn-sm btn-outline-secondary ms-1"
+                      >Details</a
+                    >
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+          <div class="text-center py-4">
+            <div class="mb-3">
+              <i class="fas fa-concierge-bell fa-3x text-muted"></i>
+            </div>
+            <p>No pending service requests at the moment.</p>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+</style>

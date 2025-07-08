@@ -1,0 +1,265 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="/admin/services">Quản lý dịch vụ</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Thêm dịch vụ
+          </li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Thêm dịch vụ mới</h1>
+      <p class="text-muted">Tạo dịch vụ mới cho khách sạn</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 mb-4 mb-lg-0">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form
+            action="/admin/services/add"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Tên dịch vụ</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="category" class="form-label">Danh mục</label>
+                <select
+                  class="form-select"
+                  id="category"
+                  name="category"
+                  required
+                >
+                  <option value="" selected disabled>Chọn danh mục</option>
+                  <option value="room-service">Dịch vụ phòng</option>
+                  <option value="cleaning">Dịch vụ dọn dẹp</option>
+                  <option value="food">Ẩm thực</option>
+                  <option value="spa">Spa & Làm đẹp</option>
+                  <option value="transport">Vận chuyển</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="price" class="form-label">Giá (USD)</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="price"
+                    name="price"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="duration" class="form-label"
+                  >Thời gian (phút)</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="duration"
+                  name="duration"
+                  min="0"
+                />
+                <small class="text-muted">Để trống nếu không áp dụng</small>
+              </div>
+              <div class="col-12 mb-3">
+                <label for="description" class="form-label">Mô tả</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+              <div class="col-12 mb-3">
+                <label class="form-label">Hình ảnh dịch vụ</label>
+                <div class="input-group mb-3">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="serviceImage"
+                    name="serviceImage"
+                    accept="image/*"
+                  />
+                  <label class="input-group-text" for="serviceImage"
+                    >Tải lên</label
+                  >
+                </div>
+                <small class="text-muted"
+                  >Kích thước tối đa: 5MB. Định dạng: JPG, PNG, GIF.</small
+                >
+              </div>
+              <div class="col-12 mb-3">
+                <div id="imagePreview" class="mb-3"></div>
+              </div>
+              <div class="col-12 mb-3">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="available"
+                    name="available"
+                    checked
+                  />
+                  <label class="form-check-label" for="available"
+                    >Dịch vụ có sẵn</label
+                  >
+                </div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                  Tạo dịch vụ
+                </button>
+                <a href="/admin/services" class="btn btn-outline-secondary"
+                  >Hủy</a
+                >
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Hướng dẫn</h5>
+        </div>
+        <div class="card-body">
+          <h6>Tên dịch vụ</h6>
+          <p class="small text-muted mb-3">
+            Đặt tên dịch vụ ngắn gọn và mô tả rõ ràng dịch vụ cung cấp.
+          </p>
+
+          <h6>Danh mục</h6>
+          <p class="small text-muted mb-3">
+            Chọn danh mục phù hợp để khách hàng dễ dàng tìm kiếm dịch vụ.
+          </p>
+
+          <h6>Giá</h6>
+          <p class="small text-muted mb-3">
+            Nhập giá dịch vụ bằng USD. Đối với dịch vụ miễn phí, nhập 0.
+          </p>
+
+          <h6>Mô tả</h6>
+          <p class="small text-muted mb-3">
+            Viết mô tả chi tiết về dịch vụ, bao gồm những gì khách hàng sẽ nhận
+            được và các lợi ích.
+          </p>
+
+          <h6>Hình ảnh</h6>
+          <p class="small text-muted">
+            Tải lên hình ảnh chất lượng cao để thu hút khách hàng. Hình ảnh nên
+            liên quan trực tiếp đến dịch vụ.
+          </p>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Biểu tượng danh mục</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 p-2 rounded me-2">
+                  <i class="fas fa-utensils text-primary"></i>
+                </div>
+                <span>Dịch vụ phòng</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <div class="bg-success bg-opacity-10 p-2 rounded me-2">
+                  <i class="fas fa-broom text-success"></i>
+                </div>
+                <span>Dọn dẹp</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <div class="bg-warning bg-opacity-10 p-2 rounded me-2">
+                  <i class="fas fa-hamburger text-warning"></i>
+                </div>
+                <span>Ẩm thực</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <div class="bg-info bg-opacity-10 p-2 rounded me-2">
+                  <i class="fas fa-spa text-info"></i>
+                </div>
+                <span>Spa</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <div class="bg-danger bg-opacity-10 p-2 rounded me-2">
+                  <i class="fas fa-car text-danger"></i>
+                </div>
+                <span>Vận chuyển</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex align-items-center">
+                <div class="bg-secondary bg-opacity-10 p-2 rounded me-2">
+                  <i class="fas fa-concierge-bell text-secondary"></i>
+                </div>
+                <span>Khác</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const serviceImageInput = document.getElementById("serviceImage");
+    const imagePreview = document.getElementById("imagePreview");
+
+    serviceImageInput.addEventListener("change", function () {
+      imagePreview.innerHTML = "";
+
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.className = "img-fluid rounded";
+          img.style.maxHeight = "200px";
+
+          imagePreview.appendChild(img);
+        };
+
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  });
+</script>

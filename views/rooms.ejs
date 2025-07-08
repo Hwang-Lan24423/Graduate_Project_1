@@ -1,0 +1,108 @@
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <div class="col-12 text-center">
+      <h1 class="display-4 fw-bold">Our Rooms</h1>
+      <p class="lead">Explore The Luxurious And Comfortable Room Types.</p>
+    </div>
+  </div>
+
+    <div class="row mb-4">
+      <form id="roomFilterForm" method="GET" action="/rooms">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label for="type" class="form-label">Loại phòng</label>
+                <select id="type" name="type" class="form-select">
+                  <option value="all">Tất cả</option>
+                  <option value="Standard">Standard</option>
+                  <option value="Deluxe">Deluxe</option>
+                  <option value="Suite">Suite</option>
+                  <option value="Presidential">Presidential</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="capacity" class="form-label">Sức chứa</label>
+                <select id="capacity" name="capacity" class="form-select">
+                  <option value="all">Tất cả</option>
+                  <option value="1">1 người</option>
+                  <option value="2">2 người</option>
+                  <option value="4">4 người</option>
+                  <option value="6">6 người</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="priceMin" class="form-label">Giá tối thiểu</label>
+                <input
+                  type="number"
+                  id="priceMin"
+                  name="priceMin"
+                  class="form-control"
+                  placeholder="$"
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="priceMax" class="form-label">Giá tối đa</label>
+                <input
+                  type="number"
+                  id="priceMax"
+                  name="priceMax"
+                  class="form-control"
+                  placeholder="$"
+                />
+              </div>
+              <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary px-4">
+                  Lọc phòng
+                </button>
+                <a href="/rooms" class="btn btn-outline-secondary px-4 ms-2"
+                  >Đặt lại</a
+                >
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Danh sách phòng -->
+    <div class="row">
+      <% if (rooms.length === 0) { %>
+      <div class="col-12 text-center py-5">
+        <h3>No Rooms Found</h3>
+        <a href="/rooms" class="btn btn-primary">View All Rooms</a>
+      </div>
+      <% } else { %> <% rooms.forEach(room => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <!-- Ảnh phòng -->
+          <img
+            src="<%= room.images || '/img/room-basic.jpg' %>"
+            class="card-img-top"
+            alt="<%= room.type %> Room"
+            style="height: 200px; object-fit: cover"
+          />
+          <div class="card-body">
+            <h5><%= room.type %> Room</h5>
+            <p><%= room.description %></p>
+            <div class="d-flex justify-content-between mb-3">
+              <span>$<%= room.price %>/night</span>
+              <span><%= room.capacity %> people</span>
+            </div>
+            <a
+              href="/rooms/<%= room._id %>"
+              class="btn btn-outline-primary w-100"
+              >Details</a
+            >
+          </div>
+        </div>
+      </div>
+      <% }); %> <% } %>
+    </div>
+
+    <!-- Liên hệ -->
+    <div class="text-center mt-5">
+      <p>Can't find what you're looking for?</p>
+      <a href="/contact" class="btn btn-primary">  Contact Us</a>
+    </div>
+  </div>
+</div>

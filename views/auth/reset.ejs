@@ -1,0 +1,44 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Đặt lại mật khẩu</h4>
+      </div>
+      <div class="card-body">
+        <form action="/auth/reset/<%= token %>" method="POST">
+          <div class="mb-3">
+            <label for="password" class="form-label">Mật khẩu mới</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              required
+            />
+            <small class="text-muted">Mật khẩu phải có ít nhất 6 ký tự</small>
+          </div>
+          <div class="mb-3">
+            <label for="password2" class="form-label"
+              >Xác nhận mật khẩu mới</label
+            >
+            <input
+              type="password"
+              id="password2"
+              name="password2"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">
+              Đặt lại mật khẩu
+            </button>
+          </div>
+        </form>
+        <div class="mt-3 text-center">
+          <p><a href="/auth/login">Quay lại đăng nhập</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

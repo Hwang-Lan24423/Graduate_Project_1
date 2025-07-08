@@ -1,0 +1,189 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/dashboard">Bảng điều khiển</a></li>
+          <li class="breadcrumb-item"><a href="/admin/reports">Báo cáo</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Báo cáo doanh thu</li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Báo cáo doanh thu</h1>
+      <p class="text-muted">Xem và phân tích dữ liệu doanh thu</p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form method="GET" action="/admin/reports/revenue">
+            <div class="row g-3">
+              <div class="col-md-5">
+                <label for="startDate" class="form-label">Từ ngày</label>
+                <input type="date" class="form-control" id="startDate" name="startDate" value="<%= startDate %>">
+              </div>
+              <div class="col-md-5">
+                <label for="endDate" class="form-label">Đến ngày</label>
+                <input type="date" class="form-control" id="endDate" name="endDate" value="<%= endDate %>">
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Lọc</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Tổng doanh thu</h6>
+          <h2 class="mb-0">$<%= stats.totalRevenue.toFixed(2) %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Tổng số thanh toán</h6>
+          <h2 class="mb-0"><%= stats.totalPayments %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-3">Phương thức thanh toán</h6>
+          <% Object.entries(stats.paymentMethods).forEach(([method, count]) => { %>
+            <div class="d-flex justify-content-between mb-2">
+              <span><%= method %></span>
+              <span class="fw-bold"><%= count %></span>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Danh sách thanh toán</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Ngày thanh toán</th>
+                  <th>Khách hàng</th>
+                  <th>Số tiền</th>
+                  <th>Phương thức</th>
+                  <th>Trạng thái</th>
+                  <th>Nhân viên xử lý</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% payments.forEach(payment => { %>
+                  <tr>
+                    <td><small>#<%= payment._id.toString().substr(-8).toUpperCase() %></small></td>
+                    <td><%= new Date(payment.paymentDate).toLocaleDateString() %></td>
+                    <td>
+                      <% if (payment.booking && payment.booking.customer) { %>
+                        <div class="fw-bold"><%= payment.booking.customer.name %></div>
+                        <small class="text-muted"><%= payment.booking.customer.email %></small>
+                      <% } else { %>
+                        N/A
+                      <% } %>
+                    </td>
+                    <td>$<%= payment.amount.toFixed(2) %></td>
+                    <td><%= payment.paymentMethod %></td>
+                    <td>
+                      <span class="badge bg-<%= payment.status === 'completed' ? 'success' : payment.status === 'refunded' ? 'warning' : 'secondary' %>">
+                        <%= payment.status %>
+                      </span>
+                    </td>
+                    <td>
+                      <% if (payment.processedBy) { %>
+                        <%= payment.processedBy.name %>
+                      <% } else { %>
+                        N/A
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Biểu đồ doanh thu</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="revenueChart" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.dailyRevenueData = JSON.parse('<%- JSON.stringify(stats.dailyRevenue || {}) %>');
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Prepare data for chart
+  const dates = Object.keys(window.dailyRevenueData).sort();
+  const revenues = dates.map(date => window.dailyRevenueData[date]);
+
+  // Create chart
+  new Chart(
+    document.getElementById('revenueChart').getContext('2d'),
+    {
+      type: 'line',
+      data: {
+        labels: dates,
+        datasets: [{
+          label: 'Doanh thu theo ngày',
+          data: revenues,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return '$' + value;
+              }
+            }
+          }
+        }
+      }
+    }
+  );
+});
+</script>

@@ -1,0 +1,252 @@
+<div class="container py-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/rooms">Phòng</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <%= room.type %> Room
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-0">
+            <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-indicators">
+                <% if (room.images && room.images.length > 0) { %> <%
+                room.images.forEach((image, index) => { %>
+                <button
+                  type="button"
+                  data-bs-target="#roomCarousel"
+                  data-bs-slide-to="<%= index %>"
+                  class="<%= index === 0 ? 'active' : '' %>"
+                  aria-current="<%= index === 0 ? 'true' : 'false' %>"
+                  aria-label="Slide <%= index + 1 %>"
+                ></button>
+                <% }); %> <% } else { %>
+                <button
+                  type="button"
+                  data-bs-target="#roomCarousel"
+                  data-bs-slide-to="0"
+                  class="active"
+                  aria-current="true"
+                  aria-label="Slide 1"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#roomCarousel"
+                  data-bs-slide-to="1"
+                  aria-label="Slide 2"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#roomCarousel"
+                  data-bs-slide-to="2"
+                  aria-label="Slide 3"
+                ></button>
+                <% } %>
+              </div>
+              <div class="carousel-inner">
+                <% if (room.images && room.images.length > 0) { %> <%
+                room.images.forEach((image, index) => { %>
+                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                  <img
+                    src="<%= image %>"
+                    class="d-block w-100"
+                    alt="<%= room.type %> Room"
+                    style="height: 400px; object-fit: cover"
+                  />
+                </div>
+                <% }); %> <% } else { %>
+                <div class="carousel-item active">
+                  <img
+                    src="/img/rooms/<%= room.type.toLowerCase() %>-1.jpg"
+                    class="d-block w-100"
+                    alt="<%= room.type %> Room"
+                    style="height: 400px; object-fit: cover"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="/img/rooms/room-placeholder.jpg"
+                    class="d-block w-100"
+                    alt="<%= room.type %> Room"
+                    style="height: 400px; object-fit: cover"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="/img/rooms/room-placeholder.jpg"
+                    class="d-block w-100"
+                    alt="<%= room.type %> Room"
+                    style="height: 400px; object-fit: cover"
+                  />
+                </div>
+                <% } %>
+              </div>
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#roomCarousel"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#roomCarousel"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h1 class="h2 mb-3"><%= room.type %> Room</h1>
+            <div class="d-flex flex-wrap align-items-center mb-3">
+              <span class="badge bg-primary me-2 mb-2"
+                >$<%= room.price %> / đêm</span
+              >
+              <span class="badge bg-info me-2 mb-2"
+                ><i class="fas fa-user-friends me-1"></i> <%= room.capacity %>
+                người</span
+              >
+              <span class="badge bg-secondary me-2 mb-2"
+                ><i class="fas fa-building me-1"></i> Tầng <%= room.floor %></span
+              >
+              <span class="badge bg-success mb-2"
+                ><i class="fas fa-check-circle me-1"></i> Có sẵn</span
+              >
+            </div>
+            <p class="lead"><%= room.description %></p>
+            <hr />
+            <h4>Tiện nghi</h4>
+            <div class="row mb-4">
+              <% room.amenities.forEach(amenity => { %>
+              <div class="col-md-4 mb-2">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-check text-success me-2"></i>
+                  <span><%= amenity %></span>
+                </div>
+              </div>
+              <% }); %>
+            </div>
+            <hr />
+            <h4>Mô tả</h4>
+            <p>
+              Phòng <%= room.type %> của chúng tôi mang đến không gian sang trọng
+              và thoải mái với thiết kế hiện đại và tinh tế. Phòng được trang bị
+              đầy đủ tiện nghi cao cấp để đảm bảo kỳ nghỉ của bạn thật thoải mái
+              và đáng nhớ.
+            </p>
+            <p>
+              Tận hưởng tầm nhìn tuyệt đẹp từ cửa sổ phòng, thư giãn trên chiếc
+              giường êm ái với chăn ga gối đệm cao cấp, và tận dụng các tiện nghi
+              hiện đại trong phòng tắm riêng.
+            </p>
+          </div>
+        </div>
+  
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <h4 class="mb-4">Chính sách phòng</h4>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <h5>
+                  <i class="far fa-clock me-2 text-primary"></i> Nhận phòng & Trả
+                  phòng
+                </h5>
+                <ul class="list-unstyled">
+                  <li>Nhận phòng: 14:00</li>
+                  <li>Trả phòng: 12:00</li>
+                  <li>
+                    Nhận phòng sớm/trả phòng muộn có thể được sắp xếp (có thể phát
+                    sinh phí)
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-6 mb-3">
+                <h5>
+                  <i class="fas fa-ban me-2 text-primary"></i> Hủy đặt phòng
+                </h5>
+                <ul class="list-unstyled">
+                  <li>Hủy trước 48 giờ: Hoàn tiền 100%</li>
+                  <li>Hủy trong vòng 24-48 giờ: Hoàn tiền 50%</li>
+                  <li>Hủy trong vòng 24 giờ: Không hoàn tiền</li>
+                </ul>
+              </div>
+              <div class="col-md-6 mb-3">
+                <h5>
+                  <i class="fas fa-child me-2 text-primary"></i> Trẻ em & Giường
+                  phụ
+                </h5>
+                <ul class="list-unstyled">
+                  <li>Trẻ em dưới 6 tuổi: Miễn phí khi sử dụng giường hiện có</li>
+                  <li>Trẻ em từ 6-12 tuổi: $20/đêm khi sử dụng giường hiện có</li>
+                  <li>Giường phụ: $30/đêm (tùy thuộc vào tình trạng phòng)</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h5><i class="fas fa-paw me-2 text-primary"></i> Thú cưng</h5>
+                <ul class="list-unstyled">
+                  <li>Không cho phép thú cưng</li>
+                  <li>Động vật hỗ trợ được chấp nhận</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-lg-4">
+        <div
+          class="card border-0 shadow-sm mb-4 sticky-top"
+          style="top: 20px; z-index: 1"
+        >
+          <div class="card-header bg-primary text-white py-3">
+            <h5 class="mb-0">Đặt phòng này</h5>
+          </div>
+          <div class="card-body p-4">
+            <% if (currentUser) { %>
+            <form action="/customer/book" method="POST">
+              <input type="hidden" name="roomId" value="<%= room._id %>" />
+              <div class="mb-3">
+                <label for="checkInDate" class="form-label"
+                  >Ngày nhận phòng</label
+                >
+                <input
+                  type="date"
+                  id="checkInDate"
+                  name="checkInDate"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </form>
+            <% } else { %>
+            <p class="text-danger">Vui lòng đăng nhập để đặt phòng này.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

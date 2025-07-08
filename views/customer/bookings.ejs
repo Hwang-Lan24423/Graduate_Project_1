@@ -1,0 +1,103 @@
+<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+  <% if (!bookings || !Array.isArray(bookings) || bookings.length === 0) { %>
+    <div class="text-center py-5">
+      <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+      <h5>Không có đặt phòng nào</h5>
+      <p class="mb-3">Bạn chưa có đặt phòng nào.</p>
+      <a href="/rooms" class="btn btn-primary">Đặt phòng ngay</a>
+    </div>
+  <% } else { %>
+    <% bookings.forEach(booking => { %>
+      <div class="card booking-card border-0 shadow-sm mb-4">
+        <div class="card-body p-0">
+          <div class="row g-0">
+            <div class="col-md-3">
+              <img
+                src="<%= booking.room && booking.room.images && booking.room.images[0] ? booking.room.images[0] : '/img/rooms/' + (booking.room && booking.room.type ? booking.room.type.toLowerCase() : 'default') + '-1.jpg' %>"
+                alt="<%= booking.room && booking.room.type ? booking.room.type : 'Room' %>"
+                class="img-fluid h-100"
+                style="object-fit: cover"
+              />
+            </div>
+            <div class="col-md-9">
+              <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="mb-0"><%= booking.room && booking.room.type ? booking.room.type : 'Unknown' %> Room</h5>
+                  <span class="booking-status status-<%= booking.status || 'unknown' %>">
+                    <% if (booking.status === 'pending') { %> Đang chờ
+                    <% } else if (booking.status === 'confirmed') { %> Đã xác nhận
+                    <% } else if (booking.status === 'checked-in') { %> Đã nhận phòng
+                    <% } else if (booking.status === 'checked-out') { %> Đã trả phòng
+                    <% } else if (booking.status === 'cancelled') { %> Đã hủy
+                    <% } else { %> Không xác định <% } %>
+                  </span>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6 mb-2 mb-md-0">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-calendar-check text-primary me-2"></i>
+                      <div>
+                        <small class="text-muted d-block">Nhận phòng</small>
+                        <span><%= booking.checkInDate ? booking.checkInDate.toLocaleDateString() : 'N/A' %></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-calendar-times text-primary me-2"></i>
+                      <div>
+                        <small class="text-muted d-block">Trả phòng</small>
+                        <span><%= booking.checkOutDate ? booking.checkOutDate.toLocaleDateString() : 'N/A' %></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6 mb-2 mb-md-0">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-money-bill-wave text-primary me-2"></i>
+                      <div>
+                        <small class="text-muted d-block">Tổng tiền</small>
+                        <span>$<%= booking.totalPrice ? booking.totalPrice.toFixed(2) : '0.00' %></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-credit-card text-primary me-2"></i>
+                      <div>
+                        <small class="text-muted d-block">Trạng thái thanh toán</small>
+                        <span class="badge bg-<%= booking.paymentStatus === 'paid' ? 'success' : booking.paymentStatus === 'refunded' ? 'warning' : 'secondary' %>">
+                          <%= booking.paymentStatus === 'paid' ? 'Đã thanh toán' : booking.paymentStatus === 'refunded' ? 'Đã hoàn tiền' : 'Chưa thanh toán' %>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <a href="/customer/bookings/<%= booking._id || '#' %>" class="btn btn-primary">Xem chi tiết</a>
+                  <% if (booking.status === 'pending' || booking.status === 'confirmed') { %>
+                    <form action="/customer/bookings/<%= booking._id || '#' %>/cancel" method="POST" class="d-inline">
+                      <button type="submit" class="btn btn-outline-danger btn-cancel-booking">Hủy đặt phòng</button>
+                    </form>
+                  <% } %>
+                  <% if (booking.status === 'checked-out') { %>
+                    <% if (booking.review) { %>
+                      <span class="badge bg-success align-self-center">
+                        <i class="fas fa-star text-warning me-1"></i>Đã đánh giá
+                      </span>
+                    <% } else { %>
+                      <a href="/customer/bookings/<%= booking._id || '#' %>#review" class="btn btn-outline-primary">
+                        <i class="far fa-star me-1"></i>Viết đánh giá
+                      </a>
+                    <% } %>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+  <% } %>
+</div>

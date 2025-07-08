@@ -1,0 +1,93 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/dashboard">Bảng điều khiển</a></li>
+          <li class="breadcrumb-item"><a href="/admin/reports">Báo cáo</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Báo cáo khách hàng</li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Báo cáo khách hàng</h1>
+      <p class="text-muted">Xem và phân tích dữ liệu khách hàng</p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Tổng số khách hàng</h6>
+          <h2 class="mb-0"><%= stats.totalCustomers %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Khách hàng đang hoạt động</h6>
+          <h2 class="mb-0"><%= stats.activeCustomers %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="text-muted mb-2">Điểm thưởng trung bình</h6>
+          <h2 class="mb-0"><%= stats.averageLoyaltyPoints.toFixed(0) %></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Danh sách khách hàng</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Khách hàng</th>
+                  <th>Email</th>
+                  <th>Số điện thoại</th>
+                  <th>Ngày tham gia</th>
+                  <th>Điểm thưởng</th>
+                  <th>Chi tiết</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% customers.forEach(customer => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-circle me-2 bg-primary text-white">
+                        <%= customer.name.charAt(0).toUpperCase() %>
+                      </div>
+                      <div>
+                        <div class="fw-bold"><%= customer.name %></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><%= customer.email %></td>
+                  <td><%= customer.phone || 'N/A' %></td>
+                  <td><%= new Date(customer.createdAt).toLocaleDateString() %></td>
+                  <td><%= customer.loyaltyPoints || 0 %> điểm</td>
+                  <td>
+                    <a href="/admin/users/<%= customer._id %>/edit" class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,259 @@
+<div class="container">
+    <div class="container-fluid py-5">
+        <div class="row mb-4">
+          <div class="col-12">
+            <h1 class="h2 mb-0">Bảng điều khiển quản trị</h1>
+            <p class="text-muted">Chào mừng trở lại, <%= currentUser.name %></p>
+          </div>
+        </div>
+      
+        <div class="row mb-4">
+          <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-calendar-check text-primary fa-2x"></i>
+                  </div>
+                  <div class="ms-3">
+                    <h6 class="mb-0 text-muted">Tổng đặt phòng</h6>
+                    <h3 class="mb-0"><%= stats.totalBookings %></h3>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-success">
+                    <i class="fas fa-arrow-up me-1"></i>
+                    <span>+5.2%</span>
+                  </span>
+                  <a href="/admin/reports/bookings" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="flex-shrink-0 bg-success bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-dollar-sign text-success fa-2x"></i>
+                  </div>
+                  <div class="ms-3">
+                    <h6 class="mb-0 text-muted">Doanh thu</h6>
+                    <h3 class="mb-0">$<%= stats.totalRevenue.toFixed(2) %></h3>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-success">
+                    <i class="fas fa-arrow-up me-1"></i>
+                    <span>+8.3%</span>
+                  </span>
+                  <a href="/admin/reports/revenue" class="btn btn-sm btn-outline-success">Chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4 mb-md-0">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="flex-shrink-0 bg-info bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-users text-info fa-2x"></i>
+                  </div>
+                  <div class="ms-3">
+                    <h6 class="mb-0 text-muted">Khách hàng</h6>
+                    <h3 class="mb-0"><%= stats.totalCustomers %></h3>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-success">
+                    <i class="fas fa-arrow-up me-1"></i>
+                    <span>+3.7%</span>
+                  </span>
+                  <a href="/admin/users?role=customer" class="btn btn-sm btn-outline-info">Chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-gift text-warning fa-2x"></i>
+                  </div>
+                  <div class="ms-3">
+                    <h6 class="mb-0 text-muted">Chương trình thành viên</h6>
+                    <h3 class="mb-0"><%= loyaltyProgram ? loyaltyProgram.name : 'Không có' %></h3>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted">
+                    <%= loyaltyProgram ? 'Đang hoạt động' : 'Không hoạt động' %>
+                  </span>
+                  <a href="/admin/loyalty" class="btn btn-sm btn-outline-warning">Chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="flex-shrink-0 bg-warning bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-bed text-warning fa-2x"></i>
+                  </div>
+                  <div class="ms-3">
+                    <h6 class="mb-0 text-muted">Phòng có sẵn</h6>
+                    <h3 class="mb-0"><%= stats.availableRooms %>/<%= stats.totalRooms %></h3>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-muted">
+                    Tỷ lệ lấp đầy: <%= Math.round((stats.occupiedRooms / stats.totalRooms) * 100) %>% 
+                  </span>
+                  <a href="/admin/rooms" class="btn btn-sm btn-outline-warning">Chi tiết</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="row mb-4">
+          <div class="col-lg-8 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Đặt phòng gần đây</h5>
+                <a href="/admin/reports/bookings" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+              </div>
+              <div class="card-body p-0">
+                <% if (recentBookings.length === 0) { %>
+                  <div class="text-center py-5">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <h5>Không có đặt phòng nào</h5>
+                    <p>Chưa có đặt phòng nào được tạo.</p>
+                  </div>
+                <% } else { %>
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>ID</th>
+                          <th>Khách hàng</th>
+                          <th>Phòng</th>
+                          <th>Ngày nhận phòng</th>
+                          <th>Trạng thái</th>
+                          <th>Tổng tiền</th>
+                          <th>Hành động</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% recentBookings.forEach(booking => { %>
+                          <tr>
+                            <td><small>#<%= booking._id.toString().substr(-8).toUpperCase() %></small></td>
+                            <td>
+                              <div class="d-flex align-items-center">
+                                <div class="me-3 d-none d-md-block">
+                                  <img src="/img/avatar-1.jpg" alt="<%= booking.customer && booking.customer.name ? booking.customer.name : 'Không xác định' %>" class="rounded-circle" width="40" height="40">
+                                </div>
+                                <div>
+                                  <h6 class="mb-0"><%= booking.customer && booking.customer.name ? booking.customer.name : 'Không xác định' %></h6>
+                                  <small class="text-muted"><%= booking.customer && booking.customer.email ? booking.customer.email : '' %></small>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <% if (booking.room) { %>
+                                <span class="fw-medium"><%= booking.room.type %> Room</span><br>
+                                <small class="text-muted">Phòng #<%= booking.room.roomNumber %></small>
+                              <% } else { %>
+                                <span class="fw-medium text-danger">Không xác định</span><br>
+                                <small class="text-muted">Không xác định</small>
+                              <% } %>
+                            </td>
+                            <td><%= booking.checkInDate.toLocaleDateString() %></td>
+                            <td>
+                              <% if (booking.status === 'pending') { %>
+                                <span class="badge bg-warning">Đang chờ</span>
+                              <% } else if (booking.status === 'confirmed') { %>
+                                <span class="badge bg-success">Đã xác nhận</span>
+                              <% } else if (booking.status === 'checked-in') { %>
+                                <span class="badge bg-primary">Đã nhận phòng</span>
+                              <% } else if (booking.status === 'checked-out') { %>
+                                <span class="badge bg-secondary">Đã trả phòng</span>
+                              <% } else if (booking.status === 'cancelled') { %>
+                                <span class="badge bg-danger">Đã hủy</span>
+                              <% } %>
+                            </td>
+                            <td>$<%= booking.totalPrice.toFixed(2) %></td>
+                            <td>
+                              <a href="/admin/bookings/<%= booking._id %>" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                            </td>
+                          </tr>
+                        <% }); %>
+                      </tbody>
+                    </table>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+              <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Đánh giá chờ duyệt</h5>
+                <a href="/admin/reviews?approved=false" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+              </div>
+              <div class="card-body p-0">
+                <% if (pendingReviews.length === 0) { %>
+                  <div class="text-center py-5">
+                    <i class="fas fa-star-half-alt fa-3x text-muted mb-3"></i>
+                    <h5>Không có đánh giá nào</h5>
+                    <p>Không có đánh giá nào đang chờ duyệt.</p>
+                  </div>
+                <% } else { %>
+                  <div class="list-group list-group-flush">
+                    <% pendingReviews.forEach(review => { %>
+                      <div class="list-group-item p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <div class="d-flex align-items-center">
+                            <div class="me-2">
+                              <img src="/img/avatar-1.jpg" alt="<%= review.customer.name %>" class="rounded-circle" width="40" height="40">
+                            </div>
+                            <div>
+                              <h6 class="mb-0"><%= review.customer.name %></h6>
+                              <div class="text-warning">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                  <i class="fas fa-star<%= i <= review.rating ? '' : '-o' %>"></i>
+                                <% } %>
+                              </div>
+                            </div>
+                          </div>
+                          <small class="text-muted"><%= new Date(review.createdAt).toLocaleDateString() %></small>
+                        </div>
+                        <p class="mb-2"><%= review.comment %></p>
+                        <div class="d-flex justify-content-end">
+                          <a href="/admin/reviews" class="btn btn-sm btn-outline-primary">Xem xét</a>
+                        </div>
+                      </div>
+                    <% }); %>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<style>
+.container {
+  max-width: 100%;
+  padding: 0;
+}
+
+.row {
+  margin: 0;
+  padding: 1rem;
+}
+</style>

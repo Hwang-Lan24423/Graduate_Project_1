@@ -1,0 +1,172 @@
+<div class="container py-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/staff/dashboard">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Quản lý đặt phòng</li>
+          </ol>
+        </nav>
+        <h1 class="h2 mb-0">Quản lý đặt phòng</h1>
+        <p class="text-muted">Quản lý tất cả đặt phòng của khách hàng</p>
+      </div>
+    </div>
+  
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <form method="GET" action="/staff/bookings">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="status" class="form-label">Trạng thái</label>
+                  <select id="status" name="status" class="form-select">
+                    <option value="all" <%= currentStatus === 'all' ? 'selected' : '' %>>Tất cả</option>
+                    <option value="pending" <%= currentStatus === 'pending' ? 'selected' : '' %>>Đang chờ</option>
+                    <option value="confirmed" <%= currentStatus === 'confirmed' ? 'selected' : '' %>>Đã xác nhận</option>
+                    <option value="checked-in" <%= currentStatus === 'checked-in' ? 'selected' : '' %>>Đã nhận phòng</option>
+                    <option value="checked-out" <%= currentStatus === 'checked-out' ? 'selected' : '' %>>Đã trả phòng</option>
+                    <option value="cancelled" <%= currentStatus === 'cancelled' ? 'selected' : '' %>>Đã hủy</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="search" class="form-label">Tìm kiếm</label>
+                  <input type="text" id="search" name="search" class="form-control" placeholder="Tìm theo tên khách hàng hoặc số phòng" value="<%= search %>">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                  <button type="submit" class="btn btn-primary w-100">Lọc</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Danh sách đặt phòng</h5>
+          </div>
+          <div class="card-body p-0">
+            <% if (bookings.length === 0) { %>
+              <div class="text-center py-5">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                <h5>Không tìm thấy đặt phòng nào</h5>
+                <p>Không có đặt phòng nào phù hợp với tiêu chí tìm kiếm của bạn.</p>
+                <a href="/staff/bookings" class="btn btn-primary">Xem tất cả đặt phòng</a>
+              </div>
+            <% } else { %>
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>ID</th>
+                      <th>Khách hàng</th>
+                      <th>Phòng</th>
+                      <th>Ngày nhận phòng</th>
+                      <th>Ngày trả phòng</th>
+                      <th>Trạng thái</th>
+                      <th>Thanh toán</th>
+                      <th>Hành động</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% bookings.forEach(booking => { %>
+                      <tr>
+                        <td><small>#<%= booking._id.toString().substr(-8).toUpperCase() %></small></td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="me-3 d-none d-md-block">
+                              <img src="/img/avatar-1.jpg" alt="<%= booking.customer.name %>" class="rounded-circle" width="40" height="40">
+                            </div>
+                            <div>
+                              <h6 class="mb-0"><%= booking.customer.name %></h6>
+                              <small class="text-muted"><%= booking.customer.email %></small>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="fw-medium"><%= booking.room.type %> Room</span><br>
+                          <small class="text-muted">Phòng #<%= booking.room.roomNumber %></small>
+                        </td>
+                        <td><%= booking.checkInDate.toLocaleDateString() %></td>
+                        <td><%= booking.checkOutDate.toLocaleDateString() %></td>
+                        <td>
+                          <% if (booking.status === 'pending') { %>
+                            <span class="badge bg-warning">Đang chờ</span>
+                          <% } else if (booking.status === 'confirmed') { %>
+                            <span class="badge bg-success">Đã xác nhận</span>
+                          <% } else if (booking.status === 'checked-in') { %>
+                            <span class="badge bg-primary">Đã nhận phòng</span>
+                          <% } else if (booking.status === 'checked-out') { %>
+                            <span class="badge bg-secondary">Đã trả phòng</span>
+                          <% } else if (booking.status === 'cancelled') { %>
+                            <span class="badge bg-danger">Đã hủy</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <% if (booking.paymentStatus === 'paid') { %>
+                            <span class="badge bg-success">Đã thanh toán</span>
+                          <% } else if (booking.paymentStatus === 'refunded') { %>
+                            <span class="badge bg-warning">Đã hoàn tiền</span>
+                          <% } else { %>
+                            <span class="badge bg-secondary">Chưa thanh toán</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="/staff/bookings/<%= booking._id %>" class="btn btn-sm btn-primary">Chi tiết</a>
+                            <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                              <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <% if (booking.status === 'pending') { %>
+                                <li>
+                                  <form action="/staff/bookings/<%= booking._id %>/status" method="POST">
+                                    <input type="hidden" name="status" value="confirmed">
+                                    <button type="submit" class="dropdown-item">Xác nhận</button>
+                                  </form>
+                                </li>
+                                <li>
+                                  <form action="/staff/bookings/<%= booking._id %>/status" method="POST">
+                                    <input type="hidden" name="status" value="cancelled">
+                                    <button type="submit" class="dropdown-item">Hủy</button>
+                                  </form>
+                                </li>
+                              <% } else if (booking.status === 'confirmed') { %>
+                                <li>
+                                  <form action="/staff/bookings/<%= booking._id %>/status" method="POST">
+                                    <input type="hidden" name="status" value="checked-in">
+                                    <button type="submit" class="dropdown-item">Nhận phòng</button>
+                                  </form>
+                                </li>
+                                <li>
+                                  <form action="/staff/bookings/<%= booking._id %>/status" method="POST">
+                                    <input type="hidden" name="status" value="cancelled">
+                                    <button type="submit" class="dropdown-item">Hủy</button>
+                                  </form>
+                                </li>
+                              <% } else if (booking.status === 'checked-in') { %>
+                                <li>
+                                  <form action="/staff/bookings/<%= booking._id %>/status" method="POST">
+                                    <input type="hidden" name="status" value="checked-out">
+                                    <button type="submit" class="dropdown-item">Trả phòng</button>
+                                  </form>
+                                </li>
+                              <% } %>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

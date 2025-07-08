@@ -1,0 +1,19 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+      <div class="mb-4">
+        <i class="fas fa-cogs fa-5x text-danger"></i>
+      </div>
+      <h1 class="display-4 fw-bold">500</h1>
+      <h2 class="mb-4">Lỗi máy chủ nội bộ</h2>
+      <p class="lead mb-4">
+        <% if (typeof message !== 'undefined') { %> <%= message %> <% } else {
+        %> Xin lỗi, đã xảy ra lỗi khi xử lý yêu cầu của bạn. Chúng tôi đang làm
+        việc để khắc phục vấn đề. <% } %>
+      </p>
+      <a href="/" class="btn btn-primary btn-lg">
+        <i class="fas fa-home me-2"></i> Quay về trang chủ
+      </a>
+    </div>
+  </div>
+</div>

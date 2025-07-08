@@ -1,0 +1,177 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/customer/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Hồ sơ của tôi
+          </li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Hồ sơ của tôi</h1>
+      <p class="text-muted">Quản lý thông tin cá nhân của bạn</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-4 mb-4 mb-lg-0">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <img
+              src="/img/avatar-1.jpg"
+              alt="<%= currentUser.name %>"
+              class="rounded-circle img-thumbnail"
+              width="120"
+              height="120"
+            />
+          </div>
+          <h5 class="mb-1"><%= currentUser.name %></h5>
+          <p class="text-muted mb-3"><%= currentUser.email %></p>
+          <div class="d-grid">
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h5 class="mb-3">Thông tin tài khoản</h5>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between">
+              <span class="text-muted">Loại tài khoản</span>
+              <span class="badge bg-primary">Khách hàng</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between">
+              <span class="text-muted">Ngày tham gia</span>
+              <span
+                ><%= new Date(currentUser.createdAt).toLocaleDateString()
+                %></span
+              >
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="d-flex justify-content-between">
+              <span class="text-muted">Điểm thưởng</span>
+              <span class="fw-bold"><%= currentUser.loyaltyPoints %> điểm</span>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <a href="/customer/loyalty" class="btn btn-outline-primary"
+              >Xem trạng thái thành viên</a
+            >
+            <a href="/auth/change-password" class="btn btn-outline-secondary"
+              >Đổi mật khẩu</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Chỉnh sửa hồ sơ</h5>
+        </div>
+        <div class="card-body p-4">
+          <form action="/customer/profile" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Họ và tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  value="<%= currentUser.name %>"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  value="<%= currentUser.email %>"
+                  disabled
+                />
+                <small class="text-muted">Email không thể thay đổi</small>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label">Số điện thoại</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phone"
+                  name="phone"
+                  value="<%= currentUser.phone || '' %>"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="birthdate" class="form-label">Ngày sinh</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="birthdate"
+                  name="birthdate"
+                />
+              </div>
+              <div class="col-12 mb-3">
+                <label for="address" class="form-label">Địa chỉ</label>
+                <textarea
+                  class="form-control"
+                  id="address"
+                  name="address"
+                  rows="3"
+                >
+<%= currentUser.address || '' %></textarea
+                >
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="city" class="form-label">Thành phố</label>
+                <input type="text" class="form-control" id="city" name="city" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="country" class="form-label">Quốc gia</label>
+                <select class="form-select" id="country" name="country">
+                  <option value="">Chọn quốc gia</option>
+                  <option value="Vietnam">Việt Nam</option>
+                  <option value="USA">Hoa Kỳ</option>
+                  <option value="AUS">Úc</option>
+                  <option value="Japan">Nhật Bản</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Other">Khác</option>
+                </select>
+              </div>
+              <div class="col-12 mb-3">
+                <label for="preferences" class="form-label"
+                  >Sở thích và yêu cầu đặc biệt</label
+                >
+                <textarea
+                  class="form-control"
+                  id="preferences"
+                  name="preferences"
+                  rows="3"
+                  placeholder="Nhập sở thích và yêu cầu đặc biệt của bạn"
+                ></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                  Lưu thay đổi
+                </button>
+                <button type="reset" class="btn btn-outline-secondary">
+                  Đặt lại
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

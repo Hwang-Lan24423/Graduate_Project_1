@@ -1,0 +1,157 @@
+<div class="container py-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin/dashboard">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/admin/services">Quản lý dịch vụ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa dịch vụ</li>
+          </ol>
+        </nav>
+        <h1 class="h2 mb-0">Chỉnh sửa dịch vụ</h1>
+        <p class="text-muted">Cập nhật thông tin dịch vụ</p>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <form action="/admin/services/<%= service._id %>" method="POST" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="name" class="form-label">Tên dịch vụ</label>
+                  <input type="text" class="form-control" id="name" name="name" value="<%= service.name %>" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="category" class="form-label">Danh mục</label>
+                  <select class="form-select" id="category" name="category" required>
+                    <option value="room-service" <%= service.category === 'room-service' ? 'selected' : '' %>>Dịch vụ phòng</option>
+                    <option value="cleaning" <%= service.category === 'cleaning' ? 'selected' : '' %>>Dịch vụ dọn dẹp</option>
+                    <option value="food" <%= service.category === 'food' ? 'selected' : '' %>>Ẩm thực</option>
+                    <option value="spa" <%= service.category === 'spa' ? 'selected' : '' %>>Spa & Làm đẹp</option>
+                    <option value="transport" <%= service.category === 'transport' ? 'selected' : '' %>>Vận chuyển</option>
+                    <option value="other" <%= service.category === 'other' ? 'selected' : '' %>>Khác</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="price" class="form-label">Giá (USD)</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" id="price" name="price" min="0" step="0.01" value="<%= service.price %>" required>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="duration" class="form-label">Thời gian (phút)</label>
+                  <input type="number" class="form-control" id="duration" name="duration" min="0" value="<%= service.duration || '' %>">
+                  <small class="text-muted">Để trống nếu không áp dụng</small>
+                </div>
+                <div class="col-12 mb-3">
+                  <label for="description" class="form-label">Mô tả</label>
+                  <textarea class="form-control" id="description" name="description" rows="4" required><%= service.description %></textarea>
+                </div>
+                <div class="col-12 mb-3">
+                  <label class="form-label">Hình ảnh hiện tại</label>
+                  <% if (service.image) { %>
+                    <div class="mb-3">
+                      <img src="<%= service.image %>" alt="<%= service.name %>" class="img-fluid rounded" style="max-height: 200px;">
+                    </div>
+                    <div class="form-check mb-3">
+                      <input class="form-check-input" type="checkbox" id="deleteImage" name="deleteImage">
+                      <label class="form-check-label" for="deleteImage">
+                        Xóa hình ảnh hiện tại
+                      </label>
+                    </div>
+                  <% } else { %>
+                    <div class="alert alert-info">
+                      <i class="fas fa-info-circle me-2"></i>
+                      Không có hình ảnh nào cho dịch vụ này.
+                    </div>
+                  <% } %>
+                </div>
+                <div class="col-12 mb-3">
+                    <label for="serviceImage" class="form-label">Tải lên hình ảnh mới</label>
+                  <input type="file" class="form-control" id="serviceImage" name="serviceImage" accept="image/*">
+                  <small class="text-muted">Kích thước tối đa: 5MB. Định dạng: JPG, PNG, GIF.</small>
+                </div>
+                <div class="col-12 mb-3">
+                  <div id="imagePreview"></div>
+                </div>
+                <div class="col-12 mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="available" name="available" <%= service.available ? 'checked' : '' %>>
+                    <label class="form-check-label" for="available">Dịch vụ có sẵn</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">Cập nhật dịch vụ</button>
+                  <a href="/admin/services" class="btn btn-outline-secondary">Hủy</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Thông tin dịch vụ</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="flex-shrink-0 bg-<%= service.category === 'room-service' ? 'primary' : service.category === 'cleaning' ? 'success' : service.category === 'food' ? 'warning' : service.category === 'spa' ? 'info' : service.category === 'transport' ? 'danger' : 'secondary' %> bg-opacity-10 p-3 rounded">
+                <i class="fas fa-<%= service.category === 'room-service' ? 'utensils' : service.category === 'cleaning' ? 'broom' : service.category === 'food' ? 'hamburger' : service.category === 'spa' ? 'spa' : service.category === 'transport' ? 'car' : 'concierge-bell' %> text-<%= service.category === 'room-service' ? 'primary' : service.category === 'cleaning' ? 'success' : service.category === 'food' ? 'warning' : service.category === 'spa' ? 'info' : service.category === 'transport' ? 'danger' : 'secondary' %>"></i>
+              </div>
+              <div class="ms-3">
+                <h6 class="mb-0"><%= service.name %></h6>
+                <span class="badge bg-<%= service.available ? 'success' : 'secondary' %>">
+                  <%= service.available ? 'Có sẵn' : 'Không có sẵn' %>
+                </span>
+              </div>
+            </div>
+            <hr>
+            <div class="mb-3">
+              <small class="text-muted d-block">ID dịch vụ</small>
+              <span><%= service._id %></span>
+            </div>
+            <div class="mb-3">
+              <small class="text-muted d-block">Ngày tạo</small>
+              <span><%= new Date(service.createdAt).toLocaleDateString() %></span>
+            </div>
+            <hr>
+            <h6>Thống kê sử dụng</h6>
+            <p class="small text-muted">Xem thống kê sử dụng dịch vụ và doanh thu trong báo cáo chi tiết.</p>
+            <a href="/admin/reports/services?serviceId=<%= service._id %>" class="btn btn-sm btn-outline-primary">Xem báo cáo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const serviceImage = document.getElementById('serviceImage');
+      const imagePreview = document.getElementById('imagePreview');
+      const deleteImage = document.getElementById('deleteImage');
+      
+      serviceImage.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.innerHTML = `
+              <img src="${e.target.result}" alt="Preview" class="img-fluid rounded mt-2" style="max-height: 200px;">
+            `;
+          };
+          reader.readAsDataURL(file);
+          
+          // Uncheck delete image if new image is selected
+          if (deleteImage) {
+            deleteImage.checked = false;
+          }
+        } else {
+          imagePreview.innerHTML = '';
+        }
+      });
+    });
+  </script>

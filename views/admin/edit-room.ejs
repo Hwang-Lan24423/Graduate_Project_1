@@ -1,0 +1,315 @@
+<div class="container py-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin/dashboard">Bảng điều khiển</a></li>
+            <li class="breadcrumb-item"><a href="/admin/rooms">Quản lý phòng</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa phòng</li>
+          </ol>
+        </nav>
+        <h1 class="h2 mb-0">Chỉnh sửa phòng</h1>
+        <p class="text-muted">Cập nhật thông tin phòng #<%= room.roomNumber %></p>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <form
+              action="/admin/rooms/<%= room._id %>"
+              method="POST"
+              enctype="multipart/form-data"
+              id="editRoomForm"
+              class="needs-validation"
+              novalidate
+            >
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="roomNumber" class="form-label">Số phòng *</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="roomNumber"
+                    name="roomNumber"
+                    value="<%= room.roomNumber %>"
+                    pattern="^[0-9]{3,4}$"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    Số phòng phải có 3-4 chữ số
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="type" class="form-label">Loại phòng *</label>
+                  <select class="form-select" id="type" name="type" required>
+                    <option value="">Chọn loại phòng</option>
+                    <option value="Standard" <%= room.type === 'Standard' ? 'selected' : '' %>>Standard</option>
+                    <option value="Deluxe" <%= room.type === 'Deluxe' ? 'selected' : '' %>>Deluxe</option>
+                    <option value="Suite" <%= room.type === 'Suite' ? 'selected' : '' %>>Suite</option>
+                    <option value="Presidential" <%= room.type === 'Presidential' ? 'selected' : '' %>>Presidential</option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Vui lòng chọn loại phòng
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="price" class="form-label">Giá (USD/đêm) *</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="price"
+                      name="price"
+                      value="<%= room.price %>"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Vui lòng nhập giá phòng hợp lệ
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="capacity" class="form-label">Sức chứa (người) *</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="capacity"
+                    name="capacity"
+                    value="<%= room.capacity %>"
+                    min="1"
+                    max="10"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    Sức chứa phải từ 1-10 người
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="floor" class="form-label">Tầng *</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="floor"
+                    name="floor"
+                    value="<%= room.floor %>"
+                    min="1"
+                    max="20"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    Số tầng phải từ 1-20
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="status" class="form-label">Trạng thái</label>
+                  <select class="form-select" id="status" name="status">
+                    <option value="available" <%= room.status === 'available' ? 'selected' : '' %>>Có sẵn</option>
+                    <option value="occupied" <%= room.status === 'occupied' ? 'selected' : '' %>>Đã đặt</option>
+                    <option value="maintenance" <%= room.status === 'maintenance' ? 'selected' : '' %>>Bảo trì</option>
+                    <option value="cleaning" <%= room.status === 'cleaning' ? 'selected' : '' %>>Đang dọn dẹp</option>
+                  </select>
+                </div>
+
+                <div class="col-12 mb-3">
+                  <label for="description" class="form-label">Mô tả *</label>
+                  <textarea
+                    class="form-control"
+                    id="description"
+                    name="description"
+                    rows="3"
+                    required
+                    minlength="10"
+                  ><%= room.description %></textarea>
+                  <div class="invalid-feedback">
+                    Mô tả phải có ít nhất 10 ký tự
+                  </div>
+                </div>
+
+                <div class="col-12 mb-3">
+                  <label for="amenities" class="form-label">Tiện nghi *</label>
+                  <textarea
+                    class="form-control"
+                    id="amenities"
+                    name="amenities"
+                    rows="3"
+                    required
+                  ><%= room.amenities.join(', ') %></textarea>
+                  <small class="text-muted">
+                    Ví dụ: Wi-Fi, TV, Điều hòa, Minibar, Két sắt
+                  </small>
+                </div>
+
+                <div class="col-12 mb-3">
+                  <label class="form-label">Hình ảnh hiện tại</label>
+                  <div class="row g-2 mb-3">
+                    <% if (room.images && room.images.length > 0) { %>
+                      <% room.images.forEach((image, index) => { %>
+                        <div class="col-4 col-md-3" id="image-<%= index %>">
+                          <div class="card h-100">
+                            <img src="<%= image %>" class="card-img-top" style="height: 120px; object-fit: cover;">
+                            <div class="card-body p-2">
+                              <button 
+                                type="button" 
+                                class="btn btn-danger btn-sm w-100" 
+                                onclick="deleteImage('<%= index %>')"
+                              >
+                                <i class="fas fa-trash-alt"></i> Xóa
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      <% }); %>
+                    <% } else { %>
+                      <div class="col-12">
+                        <p class="text-muted mb-0">Chưa có hình ảnh</p>
+                      </div>
+                    <% } %>
+                  </div>
+
+                  <label for="roomImages" class="form-label">Thêm hình ảnh mới</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="roomImages"
+                    name="roomImages"
+                    accept="image/*"
+                    multiple
+                  />
+                  <small class="text-muted">
+                    Bạn có thể chọn nhiều hình ảnh
+                  </small>
+                </div>
+
+                <div class="col-12">
+                  <div id="imagePreview" class="row g-2 mb-3"></div>
+                </div>
+
+                <div class="col-12">
+                  <input type="hidden" name="existingImages" id="existingImages" value="<%= room.images.join(',') %>">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Lưu thay đổi
+                  </button>
+                  <a href="/admin/rooms" class="btn btn-outline-secondary">
+                    <i class="fas fa-times me-2"></i>Hủy
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Thông tin bổ sung</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded">
+                <i class="fas fa-bed text-primary"></i>
+              </div>
+              <div class="ms-3">
+                <h6 class="mb-0">Phòng #<%= room.roomNumber %></h6>
+                <% const dateCreated = new Date(room.createdAt); %>
+                <span class="text-muted">Tạo ngày <%= dateCreated.toLocaleDateString() %></span>
+              </div>
+            </div>
+            <hr>
+            <h6>Lịch sử đặt phòng</h6>
+            <p class="small text-muted">Xem lịch sử đặt phòng và trạng thái phòng trong báo cáo chi tiết.</p>
+            <a href="/admin/reports/rooms?roomId=<%= room._id %>" class="btn btn-sm btn-outline-primary">Xem báo cáo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+(() => {
+  'use strict';
+
+  const form = document.getElementById('editRoomForm');
+  const imagePreview = document.getElementById('imagePreview');
+  const existingImagesInput = document.getElementById('existingImages');
+  let existingImages = existingImagesInput.value ? existingImagesInput.value.split(',').filter(Boolean) : [];
+
+  // Form validation
+  form.addEventListener('submit', function(event) {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    form.classList.add('was-validated');
+  });
+
+  // Delete existing image
+  window.deleteImage = function(index) {
+    if (index >= 0 && index < existingImages.length) {
+      // Remove from DOM
+      const imageElement = document.getElementById(`image-${index}`);
+      if (imageElement) {
+        imageElement.remove();
+      }
+      
+      // Remove from array and update hidden input
+      existingImages.splice(index, 1); // Sử dụng splice thay vì filter
+      existingImagesInput.value = existingImages.join(',');
+      
+      // Log để debug
+      console.log('Current images after delete:', existingImages);
+    }
+  };
+
+  // Preview new images
+  const roomImagesInput = document.getElementById('roomImages');
+  if (roomImagesInput) {
+    roomImagesInput.addEventListener('change', function() {
+      imagePreview.innerHTML = '';
+      
+      if (this.files) {
+        [...this.files].forEach((file) => {
+          if (!file.type.startsWith('image/')) {
+            alert('Chỉ chấp nhận file hình ảnh!');
+            return;
+          }
+          
+          if (file.size > 5 * 1024 * 1024) {
+            alert('File ' + file.name + ' vượt quá kích thước cho phép (5MB)');
+            return;
+          }
+          
+          const col = document.createElement('div');
+          col.className = 'col-4 col-md-3';
+          
+          const card = document.createElement('div');
+          card.className = 'card h-100';
+          
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            card.innerHTML = `
+              <img src="${e.target.result}" class="card-img-top" style="height: 120px; object-fit: cover;">
+              <div class="card-body p-2">
+                <p class="card-text small text-truncate mb-0">${file.name}</p>
+              </div>
+            `;
+            col.appendChild(card);
+            imagePreview.appendChild(col);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+  }
+})();
+  </script>

@@ -1,0 +1,303 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/admin/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="/admin/rooms">Quản lý phòng</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Thêm phòng</li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Thêm phòng mới</h1>
+      <p class="text-muted">Tạo phòng mới với thông tin chi tiết</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 mb-4 mb-lg-0">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form
+            action="/admin/rooms/add"
+            method="POST"
+            enctype="multipart/form-data"
+            id="addRoomForm"
+            class="needs-validation"
+            novalidate
+          >
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="roomNumber" class="form-label">Số phòng *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="roomNumber"
+                  name="roomNumber"
+                  pattern="^[0-9]{3,4}$"
+                  required
+                />
+                <div class="invalid-feedback">Số phòng phải có 3-4 chữ số (VD: 101, 1001)</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="type" class="form-label">Loại phòng *</label>
+                <select class="form-select" id="type" name="type" required>
+                  <option value="">Chọn loại phòng</option>
+                  <option value="Standard">Standard</option>
+                  <option value="Deluxe">Deluxe</option>
+                  <option value="Suite">Suite</option>
+                  <option value="Presidential">Presidential</option>
+                </select>
+                <div class="invalid-feedback">Vui lòng chọn loại phòng</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="price" class="form-label">Giá (USD/đêm) *</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="price"
+                    name="price"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="invalid-feedback">Giá phòng phải lớn hơn hoặc bằng 0</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="capacity" class="form-label">Sức chứa (người) *</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="capacity"
+                  name="capacity"
+                  min="1"
+                  max="10"
+                  required
+                />
+                <div class="invalid-feedback">Sức chứa phải từ 1-10 người</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="floor" class="form-label">Tầng *</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="floor"
+                  name="floor"
+                  min="1"
+                  max="20"
+                  required
+                />
+                <div class="invalid-feedback">Số tầng phải từ 1-20</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="status" class="form-label">Trạng thái</label>
+                <select class="form-select" id="status" name="status">
+                  <option value="available" selected>Có sẵn</option>
+                  <option value="occupied">Đã đặt</option>
+                  <option value="maintenance">Bảo trì</option>
+                  <option value="cleaning">Đang dọn dẹp</option>
+                </select>
+              </div>
+              <div class="col-12 mb-3">
+                <label for="description" class="form-label">Mô tả *</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  rows="3"
+                  minlength="10"
+                  required
+                ></textarea>
+                <div class="invalid-feedback">Mô tả phải có ít nhất 10 ký tự</div>
+              </div>
+              <div class="col-12 mb-3">
+                <label for="amenities" class="form-label">Tiện nghi *</label>
+                <textarea
+                  class="form-control"
+                  id="amenities"
+                  name="amenities"
+                  rows="3"
+                  placeholder="Nhập các tiện nghi, phân cách bằng dấu phẩy"
+                  required
+                ></textarea>
+                <div class="invalid-feedback">Vui lòng nhập các tiện nghi của phòng</div>
+                <small class="text-muted"
+                  >Ví dụ: Wi-Fi, TV, Điều hòa, Minibar, Két sắt</small
+                >
+              </div>
+              <div class="col-12 mb-3">
+                <label for="roomImages" class="form-label">Hình ảnh phòng</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="roomImages"
+                  name="roomImages"
+                  accept="image/*"
+                  multiple
+                />
+                <div class="invalid-feedback">Vui lòng chọn ít nhất một hình ảnh</div>
+                <small class="text-muted"
+                  >Bạn có thể chọn nhiều hình ảnh. Kích thước tối đa: 5MB mỗi
+                  hình.</small
+                >
+              </div>
+              <div class="col-12">
+                <div id="imagePreview" class="row g-2 mb-3"></div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-plus-circle me-2"></i>Tạo phòng
+                </button>
+                <a href="/admin/rooms" class="btn btn-outline-secondary">
+                  <i class="fas fa-times me-2"></i>Hủy
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Hướng dẫn</h5>
+        </div>
+        <div class="card-body">
+          <h6>Số phòng</h6>
+          <p class="small text-muted mb-3">
+            Số phòng phải là duy nhất. Thông thường, số phòng bao gồm số tầng và
+            số phòng (ví dụ: 101, 102, 201, 202).
+          </p>
+
+          <h6>Loại phòng</h6>
+          <p class="small text-muted mb-3">
+            Chọn loại phòng phù hợp. Mỗi loại phòng có các tiện nghi và giá khác
+            nhau.
+          </p>
+
+          <h6>Giá</h6>
+          <p class="small text-muted mb-3">
+            Nhập giá phòng theo đêm (USD). Giá nên phản ánh loại phòng và các
+            tiện nghi đi kèm.
+          </p>
+
+          <h6>Tiện nghi</h6>
+          <p class="small text-muted mb-3">
+            Liệt kê tất cả các tiện nghi có trong phòng, phân cách bằng dấu
+            phẩy. Điều này giúp khách hàng hiểu rõ về những gì họ sẽ nhận được.
+          </p>
+
+          <h6>Hình ảnh</h6>
+          <p class="small text-muted">
+            Tải lên hình ảnh chất lượng cao của phòng. Hình ảnh nên hiển thị rõ
+            không gian phòng, phòng tắm và các tiện nghi đặc biệt.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const form = document.getElementById('addRoomForm');
+  const imagePreview = document.getElementById('imagePreview');
+  
+  // Form validation
+  form.addEventListener('submit', function(event) {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Validate số phòng
+    const roomNumber = document.getElementById('roomNumber').value;
+    if (!/^[0-9]{3,4}$/.test(roomNumber)) {
+      event.preventDefault();
+      alert('Số phòng phải có 3-4 chữ số');
+      return;
+    }
+
+    // Validate các trường số
+    const price = parseFloat(document.getElementById('price').value);
+    const capacity = parseInt(document.getElementById('capacity').value);
+    const floor = parseInt(document.getElementById('floor').value);
+
+    if (isNaN(price) || price < 0) {
+      event.preventDefault();
+      alert('Giá phòng không hợp lệ');
+      return;
+    }
+
+    if (isNaN(capacity) || capacity < 1 || capacity > 10) {
+      event.preventDefault();
+      alert('Sức chứa phải từ 1-10 người');
+      return;
+    }
+
+    if (isNaN(floor) || floor < 1 || floor > 20) {
+      event.preventDefault();
+      alert('Số tầng phải từ 1-20');
+      return;
+    }
+
+    // Validate mô tả
+    const description = document.getElementById('description').value;
+    if (description.length < 10) {
+      event.preventDefault();
+      alert('Mô tả phải có ít nhất 10 ký tự');
+      return;
+    }
+
+    form.classList.add('was-validated');
+  });
+
+  // Image preview
+  const roomImagesInput = document.getElementById('roomImages');
+  if (roomImagesInput) {
+    roomImagesInput.addEventListener('change', function() {
+      imagePreview.innerHTML = '';
+      
+      if (this.files) {
+        Array.from(this.files).forEach(file => {
+          if (!file.type.match('image.*')) {
+            alert('Chỉ chấp nhận file hình ảnh!');
+            return;
+          }
+          
+          if (file.size > 5 * 1024 * 1024) {
+            alert('File ' + file.name + ' vượt quá kích thước cho phép (5MB)');
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const col = document.createElement('div');
+            col.className = 'col-4 col-md-3';
+            
+            col.innerHTML = `
+              <div class="card h-100">
+                <img src="${e.target.result}" class="card-img-top" style="height: 120px; object-fit: cover;">
+                <div class="card-body p-2">
+                  <p class="card-text small text-truncate mb-0">${file.name}</p>
+                </div>
+              </div>
+            `;
+            
+            imagePreview.appendChild(col);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+  }
+})();
+</script>

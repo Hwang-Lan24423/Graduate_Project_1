@@ -1,0 +1,467 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/customer/dashboard">Bảng điều khiển</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="/customer/bookings">Đặt phòng của tôi</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Chi tiết đặt phòng
+          </li>
+        </ol>
+      </nav>
+      <h1 class="h2 mb-0">Chi tiết đặt phòng</h1>
+      <% if (booking && booking._id) { %>
+      <p class="text-muted">
+        Mã đặt phòng: #<%= booking._id.toString().substr(-8).toUpperCase() %>
+      </p>
+      <% } else { %>
+      <p class="text-danger">Thông tin đặt phòng không khả dụng.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 mb-4 mb-lg-0">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Thông tin đặt phòng</h5>
+          <% if (booking && booking.status) { %>
+          <span class="booking-status status-<%= booking.status %>">
+            <% 
+              let statusText = '';
+              if (booking.status === 'pending') statusText = 'Đang chờ';
+              else if (booking.status === 'confirmed') statusText = 'Đã xác nhận';
+              else if (booking.status === 'checked-in') statusText = 'Đã nhận phòng';
+              else if (booking.status === 'checked-out') statusText = 'Đã trả phòng';
+              else if (booking.status === 'cancelled') statusText = 'Đã hủy';
+            %>
+            <%= statusText %>
+          </span>
+          <% } %>
+        </div>
+        <div class="card-body p-4">
+          <% if (booking) %>
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  <div class="bg-primary bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-calendar-check text-primary"></i>
+                  </div>
+                </div>
+                <div class="ms-3">
+                  <h6 class="mb-1">Ngày nhận phòng</h6>
+                  <p class="mb-0">
+                    <%= booking.checkInDate ? booking.checkInDate.toLocaleDateString() : 'N/A' %>, 14:00
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  <div class="bg-primary bg-opacity-10 p-3 rounded">
+                    <i class="fas fa-calendar-times text-primary"></i>
+                  </div>
+                </div>
+                <div class="ms-3">
+                  <h6 class="mb-1">Ngày trả phòng</h6>
+                  <p class="mb-0">
+                    <%= booking.checkOutDate ? booking.checkOutDate.toLocaleDateString() : 'N/A' %>, 12:00
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thông tin phòng -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+              <h5 class="mb-0">Thông tin phòng</h5>
+            </div>
+            <div class="card-body p-0">
+              <% if (booking && booking.room) { %>
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img
+                    src="<%= booking.room.images && booking.room.images[0] ? booking.room.images[0] : '/img/rooms/' + (booking.room.type || 'default').toLowerCase() + '-1.jpg' %>"
+                    alt="<%= booking.room.type || 'Phòng' %>"
+                    class="img-fluid h-100"
+                    style="object-fit: cover"
+                  />
+                </div>
+                <div class="col-md-8">
+                  <div class="p-4">
+                    <h5 class="mb-2"><%= booking.room.type || 'Không xác định' %> Room</h5>
+                    <p class="mb-3">
+                      <%= booking.room.description || 'Phòng sang trọng với tiện nghi hiện đại.' %>
+                    </p>
+                    <div class="mb-3">
+                      <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-user-friends text-primary me-2"></i>
+                        <span>Sức chứa: <%= booking.room.capacity || 'N/A' %> khách</span>
+                      </div>
+                      <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-bed text-primary me-2"></i>
+                        <span>Phòng #<%= booking.room.roomNumber || 'N/A' %></span>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-building text-primary me-2"></i>
+                        <span>Tầng <%= booking.room.floor || 'N/A' %></span>
+                      </div>
+                    </div>
+                    <h6>Tiện nghi:</h6>
+                    <div class="row mb-3">
+                      <% if (booking.room.amenities && Array.isArray(booking.room.amenities)) { %>
+                      <% booking.room.amenities.forEach(amenity => { %>
+                      <div class="col-md-6 mb-1">
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-check text-success me-2"></i>
+                          <span><%= amenity %></span>
+                        </div>
+                      </div>
+                      <% }); %>
+                      <% } else { %>
+                      <p>Không có tiện nghi nào được liệt kê.</p>
+                      <% } %>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <a href="/rooms/<%= booking.room._id || '#' %>" class="btn btn-outline-primary">Xem chi tiết phòng</a>
+                      <% if (booking.status === 'pending' || booking.status === 'confirmed') { %>
+                        <form action="/customer/bookings/<%= booking._id %>/cancel" method="POST" class="d-inline">
+                          <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy đặt phòng này?')">
+                            <i class="fas fa-times-circle me-2"></i>Hủy đặt phòng
+                          </button>
+                        </form>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% } else { %>
+              <p class="text-danger">Chi tiết phòng không khả dụng.</p>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Phần đánh giá -->
+          <% if (booking && booking.status === 'checked-out' && (!reviews || !reviews.some(r => r.booking.toString() === booking._id.toString()))) { %>
+          <div class="card border-0 shadow-sm" id="review">
+            <div class="card-header bg-white py-3">
+              <h5 class="mb-0">Đánh giá của bạn</h5>
+            </div>
+            <div class="card-body p-4">
+              <form action="/customer/review" method="POST">
+                <input type="hidden" name="bookingId" value="<%= booking._id %>" />
+                <div class="mb-3">
+                  <label class="form-label">Đánh giá của bạn</label>
+                  <div class="rating-stars mb-2">
+                    <div class="d-flex">
+                      <% for (let i = 1; i <= 5; i++) { %>
+                      <div class="form-check form-check-inline">
+                        <input
+                          class="form-check-input d-none"
+                          type="radio"
+                          name="rating"
+                          id="rating<%= i %>"
+                          value="<%= i %>"
+                          <%= i === 5 ? 'checked' : '' %>
+                        >
+                        <label
+                          class="form-check-label rating-label"
+                          for="rating<%= i %>"
+                        >
+                          <i class="far fa-star"></i>
+                        </label>
+                      </div>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="comment" class="form-label">Nhận xét của bạn</label>
+                  <textarea
+                    class="form-control"
+                    id="comment"
+                    name="comment"
+                    rows="4"
+                    placeholder="Chia sẻ trải nghiệm của bạn..."
+                    required
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+              </form>
+            </div>
+          </div>
+          <% } %>
+
+          <!-- Hiển thị đánh giá đã tồn tại -->
+          <% if (reviews && reviews.some(r => r.booking.toString() === booking._id.toString())) { %>
+          <div class="card border-0 shadow-sm" id="review">
+            <div class="card-header bg-white py-3">
+              <h5 class="mb-0">Đánh giá của bạn</h5>
+            </div>
+            <div class="card-body p-4">
+              <% const existingReview = reviews.find(r => r.booking.toString() === booking._id.toString()); %>
+              <div class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="me-3">
+                    <div class="d-flex text-warning">
+                      <% for (let i = 1; i <= 5; i++) { %>
+                        <i class="fas fa-star<%= i <= existingReview.rating ? '' : '-o' %> me-1"></i>
+                      <% } %>
+                    </div>
+                    <small class="text-muted">Đánh giá của bạn vào <%= new Date(existingReview.createdAt).toLocaleDateString() %></small>
+                  </div>
+                  <div class="ms-auto">
+                    <span class="badge bg-<%= existingReview.isApproved ? 'success' : 'warning' %>">
+                      <%= existingReview.isApproved ? 'Đã duyệt' : 'Chờ duyệt' %>
+                    </span>
+                  </div>
+                </div>
+                <p class="mb-0"><%= existingReview.comment %></p>
+
+                <% if (existingReview.adminResponse) { %>
+                <div class="bg-light p-3 rounded mt-3">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-hotel text-primary me-2"></i>
+                    <h6 class="mb-0">Phản hồi từ Luxury Hotel</h6>
+                  </div>
+                  <p class="mb-0"><%= existingReview.adminResponse %></p>
+                </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% if (booking && (booking.status === 'confirmed' || booking.status === 'checked-in')) { %>
+    <!-- Yêu cầu dịch vụ -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0">Yêu cầu dịch vụ</h5>
+      </div>
+      <div class="card-body">
+        <% if (availableServices && Array.isArray(availableServices)) { %>
+        <form action="/customer/service-request" method="POST">
+          <input type="hidden" name="bookingId" value="<%= booking._id %>" />
+          <div class="mb-3">
+            <label for="serviceId" class="form-label">Chọn dịch vụ</label>
+            <select class="form-select" id="serviceId" name="serviceId" required>
+              <option value="" selected disabled>Chọn một dịch vụ...</option>
+              <% availableServices.forEach(service => { %>
+              <option value="<%= service._id %>" data-price="<%= service.price %>">
+                <%= service.name %> - $<%= service.price %>
+              </option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="notes" class="form-label">Ghi chú</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Thêm ghi chú cho yêu cầu của bạn..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Gửi yêu cầu</button>
+        </form>
+        <% } %>
+
+        <!-- Danh sách yêu cầu dịch vụ -->
+        <% if (serviceRequests && serviceRequests.length > 0) { %>
+        <div class="mt-4">
+          <h6>Các yêu cầu dịch vụ của bạn</h6>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Dịch vụ</th>
+                  <th>Ngày yêu cầu</th>
+                  <th>Trạng thái</th>
+                  <th>Giá</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% serviceRequests.forEach(request => { %>
+                <tr>
+                  <td><%= request.service.name %></td>
+                  <td><%= request.requestDate.toLocaleDateString() %></td>
+                  <td>
+                    <span class="badge bg-<%= request.status === 'pending' ? 'warning' : 
+                                          request.status === 'in-progress' ? 'info' : 
+                                          request.status === 'completed' ? 'success' : 'danger' %>">
+                      <%= request.status === 'pending' ? 'Đang chờ' :
+                          request.status === 'in-progress' ? 'Đang xử lý' :
+                          request.status === 'completed' ? 'Hoàn thành' : 'Đã hủy' %>
+                    </span>
+                  </td>
+                  <td>$<%= request.service.price.toFixed(2) %></td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+
+  <!-- Thanh toán -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0">Thông tin thanh toán</h5>
+    </div>
+    <div class="card-body">
+      <div class="d-flex justify-content-between mb-3">
+        <span>Tổng tiền phòng:</span>
+        <span>$<%= booking.totalPrice.toFixed(2) %></span>
+      </div>
+      <% if (serviceRequests && serviceRequests.length > 0) { %>
+      <div class="d-flex justify-content-between mb-3">
+        <span>Tổng tiền dịch vụ:</span>
+        <span>$<%= serviceRequests.reduce((total, req) => total + (req.service.price || 0), 0).toFixed(2) %></span>
+      </div>
+      <% } %>
+      <hr>
+      <div class="d-flex justify-content-between mb-3 fw-bold">
+        <span>Tổng cộng:</span>
+        <span>$<%= (booking.totalPrice + (serviceRequests ? serviceRequests.reduce((total, req) => total + (req.service.price || 0), 0) : 0)).toFixed(2) %></span>
+      </div>
+
+      <% if (booking.status !== 'cancelled' && booking.status !== 'checked-out' && booking.paymentStatus !== 'paid') { %>
+      <form action="/customer/bookings/<%= booking._id %>/payment" method="POST">
+        <div class="mb-3">
+          <label class="form-label">Phương thức thanh toán</label>
+          <select class="form-select" name="paymentMethod" required>
+            <option value="" selected disabled>Chọn phương thức thanh toán...</option>
+            <option value="credit-card">Thẻ tín dụng</option>
+            <option value="debit-card">Thẻ ghi nợ</option>
+            <option value="bank-transfer">Chuyển khoản</option>
+            <option value="paypal">PayPal</option>
+          </select>
+        </div>
+        <input type="hidden" name="amount" value="<%= (booking.totalPrice + (serviceRequests ? serviceRequests.reduce((total, req) => total + (req.service.price || 0), 0) : 0)).toFixed(2) %>">
+        <button type="submit" class="btn btn-primary">Thanh toán</button>
+      </form>
+      <% } %>
+
+      <div class="alert alert-<%= booking.paymentStatus === 'paid' ? 'success' : 'warning' %> mb-0 mt-3">
+        <i class="fas fa-<%= booking.paymentStatus === 'paid' ? 'check-circle' : 'exclamation-circle' %> me-2"></i>
+        <%= booking.paymentStatus === 'paid' ? 'Đã thanh toán đầy đủ' : 'Chưa thanh toán' %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cần hỗ trợ -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0">Cần hỗ trợ?</h5>
+    </div>
+    <div class="card-body p-4">
+      <p class="mb-4">Nếu bạn cần hỗ trợ thêm về đặt phòng này, vui lòng liên hệ với chúng tôi qua các kênh sau:</p>
+      
+      <div class="d-flex align-items-center mb-3">
+        <div class="flex-shrink-0 me-3">
+          <div class="bg-primary bg-opacity-10 p-2 rounded">
+            <i class="fas fa-phone text-primary"></i>
+          </div>
+        </div>
+        <div>
+          <h6 class="mb-0">+84 123 456 789</h6>
+          <small class="text-muted">Đường dây nóng hỗ trợ 24/7</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center mb-3">
+        <div class="flex-shrink-0 me-3">
+          <div class="bg-primary bg-opacity-10 p-2 rounded">
+            <i class="fas fa-envelope text-primary"></i>
+          </div>
+        </div>
+        <div>
+          <h6 class="mb-0">support@luxuryhotel.com</h6>
+          <small class="text-muted">Phản hồi trong vòng 24 giờ</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <div class="flex-shrink-0 me-3">
+          <div class="bg-primary bg-opacity-10 p-2 rounded">
+            <i class="fas fa-comments text-primary"></i>
+          </div>
+        </div>
+        <div>
+          <h6 class="mb-0">Live Chat</h6>
+          <small class="text-muted">Chat trực tuyến với nhân viên hỗ trợ</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Hiển thị giá dịch vụ
+    const serviceSelect = document.getElementById("serviceId");
+    const servicePriceDisplay = document.getElementById("servicePrice");
+
+    if (serviceSelect && servicePriceDisplay) {
+      serviceSelect.addEventListener("change", function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const servicePrice = parseFloat(
+          selectedOption.getAttribute("data-price")
+        );
+
+        if (!isNaN(servicePrice)) {
+          servicePriceDisplay.textContent = servicePrice.toFixed(2);
+        } else {
+          servicePriceDisplay.textContent = "0.00";
+        }
+      });
+    }
+
+    // Sao đánh giá
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingLabels = document.querySelectorAll(".rating-label");
+
+    if (ratingInputs.length > 0 && ratingLabels.length > 0) {
+      updateStars();
+
+      ratingLabels.forEach((label, index) => {
+        label.addEventListener("mouseover", () => {
+          const currentValue = index + 1;
+          ratingLabels.forEach((l, i) => {
+            if (i < currentValue) {
+              l.innerHTML = '<i class="fas fa-star text-warning"></i>';
+            } else {
+              l.innerHTML = '<i class="far fa-star"></i>';
+            }
+          });
+        });
+
+        label.addEventListener("mouseout", () => {
+          updateStars();
+        });
+      });
+
+      function updateStars() {
+        const checkedInput = document.querySelector('input[name="rating"]:checked');
+        const checkedValue = checkedInput ? parseInt(checkedInput.value) : 0;
+
+        ratingLabels.forEach((label, index) => {
+          if (index < checkedValue) {
+            label.innerHTML = '<i class="fas fa-star text-warning"></i>';
+          } else {
+            label.innerHTML = '<i class="far fa-star"></i>';
+          }
+        });
+      }
+    }
+  });
+</script>

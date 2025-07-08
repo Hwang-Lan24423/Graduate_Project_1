@@ -1,0 +1,41 @@
+<div class="container mt-5">
+  <h1 class="mb-4">Chương trình khách hàng thân thiết</h1>
+
+  <% if (loyaltyProgram) { %>
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><%= loyaltyProgram.name %></h5>
+      </div>
+      <div class="card-body">
+        <p class="lead">Điểm hiện tại của bạn: <strong><%= currentUser.loyaltyPoints %></strong></p>
+
+        <% if (userTier) { %>
+          <h6>Cấp độ hiện tại: <%= userTier.name %></h6>
+          <p>Giảm giá: <%= userTier.discountPercentage %>%</p>
+          <p>Điểm tối thiểu: <%= userTier.minimumPoints %></p>
+        <% } else { %>
+          <p>Bạn chưa đạt cấp độ nào trong chương trình.</p>
+        <% } %>
+
+        <% if (nextTier) { %>
+          <h6>Cấp độ tiếp theo: <%= nextTier.name %></h6>
+          <p>Điểm cần để đạt: <%= pointsToNextTier %></p>
+          <div class="progress">
+            <div
+              class="progress-bar bg-success"
+              role="progressbar"
+              style="width: <%= nextTier.minimumPoints > 0 ? (currentUser.loyaltyPoints / nextTier.minimumPoints) * 100 : 0 %>%;"
+              aria-valuenow="<%= currentUser.loyaltyPoints %>"
+              aria-valuemin="0"
+              aria-valuemax="<%= nextTier.minimumPoints %>"
+            ></div>
+          </div>
+        <% } else { %>
+          <p>Bạn đã đạt cấp độ cao nhất!</p>
+        <% } %>
+      </div>
+    </div>
+  <% } else { %>
+    <p class="text-muted">Hiện tại không có chương trình khách hàng thân thiết nào hoạt động.</p>
+  <% } %>
+</div>
