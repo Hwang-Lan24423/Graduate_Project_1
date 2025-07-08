@@ -1,5 +1,3 @@
-Based on the Hotel Management System codebase in the `Hwang-Lan24423/Graduate_Project_1` repository, I'll create a comprehensive README file for you.
-
 # Hotel Management System
 
 A comprehensive full-stack web application for managing hotel operations including room bookings, customer management, service requests, and administrative functions.
